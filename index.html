@@ -1,1 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ghetto Van Adventures</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --dust:    #D4A96A;   /* worn desert amber */
+      --rust:    #B5541E;   /* road-sign rust */
+      --asphalt: #1A1A1A;   /* night highway */
+      --offwhite:#F0EBE1;   /* sun-bleached paper */
+      --fog:     #888070;   /* distant ridge */
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--asphalt);
+      color: var(--offwhite);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── Road horizon background ── */
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .road {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* sky gradient */
+    .road::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        #0d1117 0%,
+        #1c2a3a 38%,
+        #2e1a0e 62%,
+        #1A1A1A 100%
+      );
+    }
+
+    /* stars */
+    .stars {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 55%;
+      background-image:
+        radial-gradient(1px 1px at 12% 8%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 28% 22%, #fff 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 44% 5%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 61% 18%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 77% 10%, #fff 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 89% 28%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 38%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 52% 33%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 44%, #fff 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 71% 40%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 19% 52%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 93% 15%, rgba(255,255,255,0.6) 0%, transparent 100%);
+    }
+
+    /* horizon glow */
+    .horizon {
+      position: absolute;
+      bottom: 42%; left: 0; width: 100%;
+      height: 120px;
+      background: radial-gradient(ellipse 60% 100% at 50% 100%,
+        rgba(181,84,30,0.55) 0%,
+        rgba(212,169,106,0.18) 50%,
+        transparent 100%
+      );
+    }
+
+    /* road surface */
+    .tarmac {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left:  360px solid transparent;
+      border-right: 360px solid transparent;
+      border-bottom: 42vh solid #2a2420;
+    }
+
+    /* dashed centre line */
+    .dashes {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 42vh;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .dashes::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to top,
+        var(--dust) 0px,
+        var(--dust) 18px,
+        transparent 18px,
+        transparent 38px
+      );
+      animation: road-scroll 1.4s linear infinite;
+    }
+
+    @keyframes road-scroll {
+      from { background-position: 0 0; }
+      to   { background-position: 0 -38px; }
+    }
+
+    /* ── Content card ── */
+    .card {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 3rem 2.5rem 2.5rem;
+      max-width: 580px;
+      width: 90%;
+    }
+
+    /* Van emoji-esque icon */
+    .van-icon {
+      font-size: 3.2rem;
+      line-height: 1;
+      margin-bottom: 1.4rem;
+      display: block;
+      filter: drop-shadow(0 0 14px rgba(212,169,106,0.5));
+      animation: bob 3.2s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-6px); }
+    }
+
+    .channel-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      letter-spacing: 0.04em;
+      line-height: 0.9;
+      color: var(--offwhite);
+      text-shadow: 0 0 40px rgba(212,169,106,0.35);
+    }
+
+    .channel-name span {
+      color: var(--dust);
+    }
+
+    .tagline {
+      margin: 1.2rem auto 0;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fog);
+    }
+
+    .divider {
+      margin: 2rem auto;
+      width: 48px;
+      height: 2px;
+      background: var(--rust);
+      border: none;
+    }
+
+    .construction-msg {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: #c8bfad;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .construction-msg strong {
+      color: var(--offwhite);
+      font-weight: 500;
+    }
+
+    .yt-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-top: 2.2rem;
+      padding: 0.85rem 2rem;
+      background: var(--rust);
+      color: var(--offwhite);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      border-radius: 3px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .yt-btn:hover {
+      background: #cc6025;
+      transform: translateY(-2px);
+    }
+
+    .yt-btn svg {
+      flex-shrink: 0;
+    }
+
+    .footer-note {
+      position: fixed;
+      bottom: 1.4rem;
+      left: 0; width: 100%;
+      text-align: center;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: #4a453e;
+      text-transform: uppercase;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dashes::before { animation: none; }
+      .van-icon        { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Road background -->
+  <div class="road" aria-hidden="true">
+    <div class="stars"></div>
+    <div class="horizon"></div>
+    <div class="tarmac"></div>
+    <div class="dashes"></div>
+  </div>
+
+  <!-- Main content -->
+  <main class="card">
+    <span class="van-icon" role="img" aria-label="Van">🚐</span>
+
+    <h1 class="channel-name">
+      Ghetto<br><span>Van</span><br>Adventures
+    </h1>
+
+    <p class="tagline">Free camping · Food finds · Open road</p>
+
+    <hr class="divider" />
+
+    <p class="construction-msg">
+      The website is <strong>under construction</strong> — but the van's always rolling.<br>
+      Head over to YouTube for free camping spots, hidden food gems, and road trip stories across Canada.
+    </p>
+
+    <a
+      class="yt-btn"
+      href="https://www.youtube.com/@ghettovanadventures"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <!-- YouTube play icon -->
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M23.5 6.2a3.01 3.01 0 0 0-2.12-2.13C19.55 3.6 12 3.6 12 3.6s-7.55 0-9.38.47A3.01 3.01 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3.01 3.01 0 0 0 2.12 2.13C4.45 20.4 12 20.4 12 20.4s7.55 0 9.38-.47a3.01 3.01 0 0 0 2.12-2.13A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8zM9.6 15.6V8.4l6.27 3.6-6.27 3.6z"/>
+      </svg>
+      Watch on YouTube
+    </a>
+  </main>
+
+  <p class="footer-note">GhettoVanAdventures.com &mdash; Coming soon</p>
+
+</body>
+</html>
