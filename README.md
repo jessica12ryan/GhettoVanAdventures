@@ -98,7 +98,9 @@ confirmation banner. One-time setup: submit once yourself, then click the
 activation link FormSubmit emails to that inbox. The date field is
 optional — empty submits fine. To approve: append the spot to
 `sightings.json`, commit, push. Nothing appears publicly until you do, so
-spam can never reach the live map.
+spam can never reach the live map. Sightings can also arrive as pull
+requests — the PR template (`.github/pull_request_template.md`) walks the
+submitter through the entry format, and merging approves it.
 Ask visitors for nearest town/landmark, never exact addresses (stated on
 the form).
 
