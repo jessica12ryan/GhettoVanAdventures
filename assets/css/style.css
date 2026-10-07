@@ -1,0 +1,548 @@
+/* ============================================================
+   Ghetto Van Adventures — shared stylesheet
+   Palette + moving-road motif carried over from the original
+   single-page site. Add new pages by copying the header/footer
+   blocks in index.html and linking them in the <nav> below.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --dust:     #D4A96A;   /* worn desert amber */
+  --rust:     #B5541E;   /* road-sign rust */
+  --rust-hi:  #cc6025;
+  --asphalt:  #1A1A1A;   /* night highway */
+  --panel:    rgba(20, 17, 14, 0.82);
+  --panel-solid: #211c17;
+  --offwhite: #F0EBE1;   /* sun-bleached paper */
+  --muted:    #c8bfad;
+  --fog:      #888070;   /* distant ridge */
+  --line:     rgba(212, 169, 106, 0.22);
+  --radius:   10px;
+  --max:      1080px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--asphalt);
+  color: var(--offwhite);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  line-height: 1.6;
+  position: relative;
+}
+
+img { max-width: 100%; display: block; }
+a { color: var(--dust); }
+::selection { background: var(--rust); color: #fff; }
+
+/* ============================================================
+   Moving road background (kept from the original site).
+   Fixed full-page layer; content scrolls above it.
+   ============================================================ */
+.road {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.road::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    #0d1117 0%,
+    #1c2a3a 38%,
+    #2e1a0e 62%,
+    #1A1A1A 100%
+  );
+}
+
+.road .stars {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 55%;
+  background-image:
+    radial-gradient(1px 1px at 12% 8%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 28% 22%, #fff 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 44% 5%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 61% 18%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 77% 10%, #fff 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 89% 28%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 38%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 52% 33%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 44%, #fff 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 71% 40%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 19% 52%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 93% 15%, rgba(255,255,255,0.6) 0%, transparent 100%);
+}
+
+.road .horizon {
+  position: absolute;
+  bottom: 42%; left: 0; width: 100%;
+  height: 120px;
+  background: radial-gradient(ellipse 60% 100% at 50% 100%,
+    rgba(181, 84, 30, 0.55) 0%,
+    rgba(212, 169, 106, 0.18) 50%,
+    transparent 100%
+  );
+}
+
+.road .tarmac {
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left:  360px solid transparent;
+  border-right: 360px solid transparent;
+  border-bottom: 42vh solid #2a2420;
+}
+
+.road .dashes {
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 42vh;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  overflow: hidden;
+}
+
+.road .dashes::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to top,
+    var(--dust) 0px,
+    var(--dust) 18px,
+    transparent 18px,
+    transparent 38px
+  );
+  animation: road-scroll 1.4s linear infinite;
+}
+
+@keyframes road-scroll {
+  from { background-position: 0 0; }
+  to   { background-position: 0 -38px; }
+}
+
+/* Slim animated road divider — the motif reused inside pages */
+.road-strip {
+  position: relative;
+  height: 46px;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(to bottom, #211c17, #1A1A1A);
+}
+.road-strip::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  background: repeating-linear-gradient(
+    to right,
+    var(--dust) 0px,
+    var(--dust) 26px,
+    transparent 26px,
+    transparent 52px
+  );
+  opacity: 0.7;
+  animation: strip-scroll 2.2s linear infinite;
+}
+@keyframes strip-scroll {
+  from { background-position: 0 0; }
+  to   { background-position: -52px 0; }
+}
+
+/* ============================================================
+   Header / nav (edit links here when adding pages)
+   ============================================================ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(16, 13, 11, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0.7rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--offwhite);
+  margin-right: auto;
+}
+.brand img { width: 40px; height: 40px; object-fit: contain; }
+.brand span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+}
+.brand span em { color: var(--dust); font-style: normal; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+}
+.nav-links a {
+  display: block;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+.nav-links a:hover { color: var(--offwhite); background: rgba(212, 169, 106, 0.1); }
+.nav-links a[aria-current="page"] { color: var(--dust); background: rgba(212, 169, 106, 0.12); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--offwhite);
+  font-size: 1.2rem;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+.page { position: relative; z-index: 1; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 1.25rem; }
+
+.hero {
+  text-align: center;
+  padding: 5rem 1.25rem 4rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.hero .van-logo {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin: 0 auto 1.2rem;
+  filter: drop-shadow(0 4px 18px rgba(212, 169, 106, 0.4));
+  animation: bob 3.2s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.kicker {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--dust);
+  margin-bottom: 1rem;
+}
+
+h1.display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  letter-spacing: 0.04em;
+  line-height: 0.92;
+  text-shadow: 0 0 40px rgba(212, 169, 106, 0.35);
+}
+h1.display span { color: var(--dust); }
+
+.tagline {
+  margin: 1.1rem auto 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+
+.lede {
+  margin-top: 1.2rem;
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.btn-row { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.85rem 1.8rem;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, border-color 0.2s;
+}
+.btn-primary { background: var(--rust); color: var(--offwhite); }
+.btn-primary:hover { background: var(--rust-hi); transform: translateY(-2px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--offwhite);
+  border-color: var(--line);
+}
+.btn-ghost:hover { border-color: var(--dust); transform: translateY(-2px); }
+
+.scroll-cue {
+  margin-top: 3rem;
+  color: var(--fog);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.scroll-cue::after {
+  content: '';
+  display: block;
+  width: 1px; height: 44px;
+  margin: 0.7rem auto 0;
+  background: linear-gradient(to bottom, var(--dust), transparent);
+}
+
+section.block { padding: 3.5rem 0; }
+section.block:first-of-type { padding-top: 2.5rem; }
+
+h2.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+h2.section-title span { color: var(--dust); }
+.section-sub { color: var(--fog); font-size: 0.95rem; margin-bottom: 1.8rem; }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  backdrop-filter: blur(4px);
+}
+
+/* Two-column feature layout */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+.video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #000;
+}
+.video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* Social cards */
+.social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.social-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.6rem 1.4rem;
+  text-decoration: none;
+  color: var(--offwhite);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: transform 0.15s, border-color 0.2s;
+}
+.social-card:hover { transform: translateY(-3px); border-color: var(--dust); }
+.social-card .handle { color: var(--dust); font-size: 0.85rem; font-weight: 500; }
+.social-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em; }
+.social-card p { color: var(--muted); font-size: 0.92rem; }
+.social-card .go { margin-top: auto; padding-top: 0.6rem; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ============================================================
+   Recent Content feed
+   ============================================================ */
+.feed-controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: 1.5rem;
+}
+.control { display: flex; flex-direction: column; gap: 0.35rem; }
+.control label {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+.control select {
+  background: var(--panel-solid);
+  color: var(--offwhite);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.92rem;
+  min-width: 210px;
+  cursor: pointer;
+}
+.control select:focus { outline: 2px solid var(--rust); outline-offset: 1px; }
+.feed-meta { margin-left: auto; color: var(--fog); font-size: 0.85rem; align-self: center; }
+
+.feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.post-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s, border-color 0.2s;
+}
+.post-card:hover { transform: translateY(-3px); border-color: var(--dust); }
+.post-thumb { aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+.post-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.post-thumb.placeholder {
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.06em;
+  color: var(--dust); background: linear-gradient(135deg, #241a10, #1A1A1A);
+}
+.post-body { padding: 1.1rem 1.15rem 1.25rem; display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }
+.post-top { display: flex; align-items: center; gap: 0.5rem; }
+.badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+}
+.badge.youtube { color: #ff8a7a; border-color: rgba(255, 90, 70, 0.4); }
+.badge.x { color: #9ecfff; border-color: rgba(120, 180, 255, 0.35); }
+.badge.instagram { color: #f0a6d8; border-color: rgba(240, 120, 200, 0.35); }
+.post-date { margin-left: auto; font-size: 0.78rem; color: var(--fog); }
+.post-body h3 { font-size: 1rem; line-height: 1.4; font-weight: 500; }
+.post-body h3 a { color: var(--offwhite); text-decoration: none; }
+.post-body h3 a:hover { color: var(--dust); }
+.post-body p.excerpt { color: var(--muted); font-size: 0.88rem; flex: 1; }
+.post-link { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; }
+.post-link:hover { text-decoration: underline; }
+
+.feed-empty, .feed-error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}
+
+/* Live embeds */
+.embed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+.x-timeline { max-height: 600px; overflow-y: auto; border-radius: var(--radius); }
+
+/* About page */
+.about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; align-items: start; }
+.about-grid h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+  margin: 1.4rem 0 0.5rem;
+  color: var(--dust);
+}
+.about-grid h3:first-child { margin-top: 0; }
+.about-grid p, .about-grid li { color: var(--muted); font-size: 0.95rem; }
+.about-grid ul { padding-left: 1.2rem; margin-top: 0.4rem; }
+.fact-list { list-style: none; padding: 0 !important; display: flex; flex-direction: column; gap: 0.7rem; }
+.fact-list li { border-left: 2px solid var(--rust); padding-left: 0.8rem; }
+.fact-list strong { color: var(--offwhite); display: block; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.coming-soon {
+  margin-top: 1.5rem;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--fog);
+}
+
+/* Footer */
+.site-footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--line);
+  background: rgba(16, 13, 11, 0.92);
+  margin-top: 2rem;
+}
+.footer-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-inner nav { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+.footer-inner nav a { color: var(--muted); text-decoration: none; font-size: 0.88rem; }
+.footer-inner nav a:hover { color: var(--dust); }
+.footer-social { display: flex; gap: 0.9rem; }
+.footer-social a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+.footer-social a:hover { color: var(--dust); }
+.copyright { width: 100%; color: #4a453e; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* Responsive */
+@media (max-width: 860px) {
+  .split, .about-grid, .embed-grid { grid-template-columns: 1fr; }
+  .social-grid, .feed-grid { grid-template-columns: 1fr 1fr; }
+  .feed-meta { margin-left: 0; }
+}
+@media (max-width: 600px) {
+  .social-grid, .feed-grid { grid-template-columns: 1fr; }
+  .nav-toggle { display: block; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    background: rgba(16, 13, 11, 0.98);
+    border-bottom: 1px solid var(--line);
+    padding: 0.5rem 1rem 1rem;
+  }
+  .nav-links.open { display: flex; }
+  .hero { padding-top: 3.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .road .dashes::before, .road-strip::before { animation: none; }
+  .hero .van-logo { animation: none; }
+  html { scroll-behavior: auto; }
+}

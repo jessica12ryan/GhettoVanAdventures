@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recent Content — Ghetto Van Adventures</title>
+  <meta name="description" content="The latest Ghetto Van Adventures posts from YouTube, X and Instagram — newest first, or flip to oldest first." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- Moving road background, shared across the whole site -->
+  <div class="road" aria-hidden="true">
+    <div class="stars"></div>
+    <div class="horizon"></div>
+    <div class="tarmac"></div>
+    <div class="dashes"></div>
+  </div>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="index.html">
+        <img src="logo-gva.png" alt="Ghetto Van Adventures logo" />
+        <span>Ghetto <em>Van</em> Adventures</span>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="recent.html" aria-current="page">Recent Content</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="page">
+    <main class="wrap">
+      <section class="block">
+        <p class="kicker">YouTube · X · Instagram</p>
+        <h1 class="display" style="font-size:clamp(2.6rem,7vw,4rem)">Recent <span>Content</span></h1>
+        <p class="section-sub">Every post from every channel in one place — newest first by default.</p>
+
+        <div class="feed-controls">
+          <div class="control">
+            <label for="sort-order">Sort order</label>
+            <select id="sort-order">
+              <option value="newest" selected>Newest to oldest</option>
+              <option value="oldest">Oldest to newest</option>
+            </select>
+          </div>
+          <div class="control">
+            <label for="source-filter">Source</label>
+            <select id="source-filter">
+              <option value="all" selected>All sources</option>
+              <option value="youtube">YouTube</option>
+              <option value="x">X</option>
+              <option value="instagram">Instagram</option>
+            </select>
+          </div>
+          <p class="feed-meta" id="feed-meta" aria-live="polite">Loading…</p>
+        </div>
+
+        <div class="feed-grid" id="feed-grid" aria-live="polite">
+          <div class="feed-empty">Loading the latest from the road…</div>
+        </div>
+      </section>
+
+      <div class="road-strip" aria-hidden="true"></div>
+
+      <section class="block">
+        <h2 class="section-title">Live <span>Feeds</span></h2>
+        <p class="section-sub">Auto-updating embeds — no refresh of this site needed.</p>
+        <div class="embed-grid">
+          <div class="panel">
+            <h3 style="font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;font-size:1.4rem;margin-bottom:.6rem">Latest uploads</h3>
+            <div class="video-frame">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/videoseries?list=UU10tXd2bgXh1sFqG89shP5w"
+                title="Latest Ghetto Van Adventures videos"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                loading="lazy"></iframe>
+            </div>
+            <p style="margin-top:.8rem;color:var(--muted);font-size:.9rem">
+              The feed above is curated in <code>posts.json</code> — run
+              <code>python3 tools/fetch-youtube.py</code> to pull the newest uploads in.
+            </p>
+          </div>
+          <div class="panel">
+            <h3 style="font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;font-size:1.4rem;margin-bottom:.6rem">On X</h3>
+            <div class="x-timeline">
+              <a class="twitter-timeline"
+                 data-theme="dark"
+                 data-height="520"
+                 href="https://x.com/ghetto_van">Posts from @ghetto_van</a>
+            </div>
+            <p style="margin-top:.8rem;color:var(--muted);font-size:.9rem">
+              Prefer Instagram? <a href="https://www.instagram.com/ghettovanadventures/" target="_blank" rel="noopener noreferrer">Open @ghettovanadventures</a> —
+              individual posts can be pinned into the feed above as their URLs are shared.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="recent.html">Recent Content</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="footer-social">
+        <a href="https://www.youtube.com/@ghettovanadventures" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="https://x.com/ghetto_van" target="_blank" rel="noopener noreferrer">X</a>
+        <a href="https://www.instagram.com/ghettovanadventures/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </div>
+      <p class="copyright">GhettoVanAdventures.com &mdash; <span data-year>2026</span></p>
+    </div>
+  </footer>
+
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/recent.js"></script>
+</body>
+</html>
