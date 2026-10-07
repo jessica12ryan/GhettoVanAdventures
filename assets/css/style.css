@@ -449,6 +449,16 @@ h2.section-title span { color: var(--dust); }
 .play-btn svg { width: 24px; height: 24px; fill: #fff; margin-left: 3px; }
 .post-thumb.playable img { transition: opacity 0.2s; }
 .post-thumb.playable:hover img { opacity: 0.85; }
+/* Background-preloading player: invisible + untouchable until ready,
+   thumbnail facade stays visible meanwhile for instant perceived speed */
+.post-thumb .yt-preload {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; border: 0;
+  opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+}
+.post-thumb.player-ready .yt-preload { opacity: 1; pointer-events: auto; }
+.post-thumb.player-ready img, .post-thumb.player-ready .play-btn { display: none; }
 .post-thumb.placeholder {
   display: flex; align-items: center; justify-content: center;
   font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.06em;

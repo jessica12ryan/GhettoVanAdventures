@@ -227,12 +227,18 @@
 
   // ── Inline playback ──────────────────────────────────────────────
   // Facades stay light until a card nears the viewport; then an
-  // IntersectionObserver swaps in the REAL paused YouTube player, so the
+  // IntersectionObserver queues the REAL paused YouTube player, so the
   // visitor's tap lands directly on YouTube's own play button — a genuine
   // in-player gesture no autoplay policy blocks (Safari included).
-  // Cards never observed (old browsers, data-saver mode) keep the facade
-  // and load an autoplay player on click as fallback.
+  // To keep players appearing fast instead of fighting over bandwidth,
+  // only a few boot at once (throttled queue) and each thumbnail stays
+  // visible until its player signals ready. Cards never observed (old
+  // browsers, data-saver mode) keep the facade and load an autoplay
+  // player on click as fallback.
   var feedObserver = null;
+  var pendingSwaps = [];
+  var activeLoads = 0;
+  var MAX_CONCURRENT_LOADS = 4;
 
   function playerHtml(id, title, autoplay) {
     return '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
@@ -242,17 +248,56 @@
       'allowfullscreen></iframe>';
   }
 
-  function swapFacade(btn) {
+  function pumpSwapQueue() {
+    while (activeLoads < MAX_CONCURRENT_LOADS && pendingSwaps.length) {
+      var btn = pendingSwaps.shift();
+      try {
+        var box = btn.closest ? btn.closest('.post-thumb') : null;
+        if (!box) continue;
+        if ('isConnected' in box && !box.isConnected) continue;
+        if (box.getAttribute && box.getAttribute('data-player') === 'ready') continue;
+        var id = btn.getAttribute ? (btn.getAttribute('data-play') || '') : '';
+        if (!YT_ID_RE.test(id)) continue;
+        startPlayerLoad(box, id, (btn.getAttribute && btn.getAttribute('data-title')) || 'YouTube video');
+      } catch (_) {}
+    }
+  }
+
+  function startPlayerLoad(box, id, title) {
+    var frame;
     try {
-      var box = btn.closest ? btn.closest('.post-thumb') : null;
-      if (!box) return;
-      if (box.getAttribute && box.getAttribute('data-player') === 'ready') return;
-      var id = btn.getAttribute ? (btn.getAttribute('data-play') || '') : '';
-      if (!YT_ID_RE.test(id)) return;
-      var title = btn.getAttribute('data-title') || 'YouTube video';
-      if (box.setAttribute) box.setAttribute('data-player', 'ready');
-      box.innerHTML = playerHtml(id, title, false);
-    } catch (_) {}
+      frame = document.createElement('iframe');
+    } catch (_) {
+      return;
+    }
+    activeLoads++;
+    var settled = false;
+    var done = function (ok) {
+      if (settled) return;
+      settled = true;
+      activeLoads = Math.max(0, activeLoads - 1);
+      try {
+        if (ok) {
+          if (box.setAttribute) box.setAttribute('data-player', 'ready');
+          if (box.classList) box.classList.add('player-ready');
+        } else if (frame.remove) {
+          frame.remove(); // blocked/failed: leave the facade fallback in place
+        }
+      } catch (_) {}
+      pumpSwapQueue();
+    };
+    try {
+      frame.className = 'yt-preload';
+      frame.title = title || 'YouTube video';
+      frame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      frame.setAttribute('allowfullscreen', '');
+      if (frame.addEventListener) frame.addEventListener('load', function () { done(true); });
+      box.appendChild(frame);
+      frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?rel=0&playsinline=1';
+      setTimeout(function () { done(false); }, 20000);
+    } catch (_) {
+      done(false);
+    }
   }
 
   function observeFacades() {
@@ -267,12 +312,14 @@
           entries.forEach(function (entry) {
             if (!entry.isIntersecting) return;
             feedObserver.unobserve(entry.target);
-            swapFacade(entry.target);
+            pendingSwaps.push(entry.target);
+            pumpSwapQueue();
           });
         }, { rootMargin: '300px 0px' });
       } else {
         feedObserver.disconnect(); // drop detached cards from last render
       }
+      pendingSwaps.length = 0; // fresh buttons on every render
       if (!grid.querySelectorAll) return;
       var btns = grid.querySelectorAll('[data-play]');
       for (var i = 0; i < btns.length; i++) feedObserver.observe(btns[i]);
