@@ -59,12 +59,23 @@
               <option value="instagram">Instagram</option>
             </select>
           </div>
+          <div class="control">
+            <label for="page-size">Per page</label>
+            <select id="page-size">
+              <option value="15" selected>15 per page</option>
+              <option value="30">30 per page</option>
+              <option value="45">45 per page</option>
+              <option value="60">60 per page</option>
+            </select>
+          </div>
           <p class="feed-meta" id="feed-meta" aria-live="polite">Loading…</p>
         </div>
 
         <div class="feed-grid" id="feed-grid" aria-live="polite">
           <div class="feed-empty">Loading the latest from the road…</div>
         </div>
+
+        <nav class="pager" id="feed-pager" aria-label="Feed pages" hidden></nav>
       </section>
 
       <div class="road-strip" aria-hidden="true"></div>
