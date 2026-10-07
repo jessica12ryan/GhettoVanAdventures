@@ -230,7 +230,7 @@
     if (!box) return;
     box.classList.add('playing');
     box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
-      '?autoplay=1&rel=0" title="' + escapeHtml(btn.getAttribute('data-title') || 'YouTube video') +
+      '?autoplay=1&rel=0&playsinline=1" title="' + escapeHtml(btn.getAttribute('data-title') || 'YouTube video') +
       '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ' +
       'allowfullscreen></iframe>';
   });
