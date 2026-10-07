@@ -4,7 +4,7 @@
 // until the owner appends it to sightings.json: moderation is structural,
 // spam can never reach the live map.
 (function () {
-  var EMAIL = 'GhettoVanAdventures@gmail.com';
+  var EMAIL = 'jessica12ryan@outlook.com';
 
   var mapEl = document.getElementById('spotted-map');
   if (!mapEl) return;

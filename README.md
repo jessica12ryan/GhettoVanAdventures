@@ -93,7 +93,7 @@ No backend, no accounts, no third-party services. Approved spots live in
 
 Visitors drop a pin + details on `spotted.html`; submitting opens
 *their own* email app with a pre-filled report to
-`GhettoVanAdventures@gmail.com` — they press send, you get the email.
+`jessica12ryan@outlook.com` — they press send, you get the email.
 To approve: append the spot to `sightings.json`, commit, push. Nothing
 appears publicly until you do, so spam can never reach the live map.
 Ask visitors for nearest town/landmark, never exact addresses (stated on
