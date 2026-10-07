@@ -515,6 +515,20 @@ h2.section-title span { color: var(--dust); }
 .page-btn.active { background: var(--rust); border-color: var(--rust); color: #fff; }
 .page-btn:disabled { opacity: 0.35; cursor: default; }
 .page-gap { color: var(--fog); padding: 0 0.2rem; }
+/* Jump-to-page control */
+.page-jump { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 0.6rem; }
+.page-jump-label { font-size: 0.85rem; color: var(--fog); white-space: nowrap; }
+.page-jump-input {
+  width: 4.2rem;
+  padding: 0.5rem 0.4rem 0.5rem 0.6rem;
+  background: var(--panel-solid);
+  color: var(--offwhite);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+.page-jump-input:focus-visible { outline: 2px solid var(--rust); outline-offset: 1px; }
+.page-go { min-width: 0; }
 
 /* Live embeds */
 .embed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }

@@ -180,6 +180,12 @@
     });
     html += '<button type="button" class="page-btn" data-page="next"' +
       (currentPage === totalPages ? ' disabled' : '') + ' aria-label="Next page">&rarr;</button>';
+    html += '<form class="page-jump" data-jump action="#">' +
+      '<label class="page-jump-label" for="page-jump-input">Go to</label>' +
+      '<input id="page-jump-input" class="page-jump-input" type="number"' +
+      ' min="1" max="' + totalPages + '" value="' + currentPage + '" inputmode="numeric"' +
+      ' aria-label="Page number">' +
+      '<button type="submit" class="page-btn page-go">Go</button></form>';
     pager.innerHTML = html;
   }
 
@@ -291,6 +297,19 @@
     box.classList.add('playing');
     if (box.setAttribute) box.setAttribute('data-player', 'ready');
     box.innerHTML = playerHtml(id, btn.getAttribute('data-title') || 'YouTube video', true);
+  });
+
+  if (pager) pager.addEventListener('submit', function (e) {
+    if (e.preventDefault) e.preventDefault();
+    var form = e.target && e.target.closest ? e.target.closest('[data-jump]') : null;
+    var scope = form || pager;
+    var input = scope.querySelector ? scope.querySelector('input') : null;
+    if (!input) return;
+    var total = Math.max(1, Math.ceil(getFiltered().posts.length / pageSize()));
+    var n = parseInt(input.value, 10);
+    if (isNaN(n)) return;
+    currentPage = Math.min(total, Math.max(1, n));
+    render(true);
   });
 
   if (pager) pager.addEventListener('click', function (e) {    var btn = e.target && e.target.closest ? e.target.closest('[data-page]') : null;
