@@ -5,6 +5,7 @@ This repository hosts the public web files for [GhettoVanAdventures.com](http://
 - `index.html` — Home: hero over the moving-road background, latest-uploads embed, social cards.
 - `recent.html` — Recent Content: unified feed (YouTube + X + Instagram) with **Newest → Oldest / Oldest → Newest** dropdown + source filter, plus live embeds.
 - `about.html` — About: story, facts, support info. Built with room to grow.
+- `contact.html` — Contact: name/email/subject/message form that emails submissions to `GhettoVanAdventures@gmail.com`.
 - `assets/css/style.css` — shared styles, including the moving-road background (`.road`) and the slim in-page divider (`.road-strip`).
 - `assets/js/site.js` — mobile nav + footer year. `assets/js/recent.js` — feed rendering/sorting.
 
@@ -65,8 +66,19 @@ instagram | https://www.instagram.com/ghettovanadventures/p/ABC123/ | 2026-10-08
 - The **Live Feeds** section on `recent.html` embeds the X timeline (via `platform.twitter.com/widgets.js`) and always-current YouTube uploads playlist — these update themselves in real time.
 - To feature a single Instagram post as a card, add its URL to `social-queue.txt` (see above) instead of editing `posts.json` directly.
 
-## Adding pages (room for expansion)
+## Contact form backend
 
-1. Copy `about.html` to e.g. `tour.html`, swap the `<main>` content.
+The static site can't send email itself, so `contact.html` posts to
+[FormSubmit](https://formsubmit.co) (free, no signup), which forwards
+submissions to `GhettoVanAdventures@gmail.com` with a honeypot spam trap,
+no captcha, and a redirect back to `contact.html?sent=1` showing a
+confirmation banner.
+
+One-time setup: submit the form once yourself, then click the activation
+link FormSubmit emails to the inbox. Until then, submissions are held.
+To re-enable its captcha, delete the `_captcha` hidden field in
+`contact.html`.
+
+## Adding pages (room for expansion)1. Copy `about.html` to e.g. `tour.html`, swap the `<main>` content.
 2. Add one `<li><a href="tour.html">…</a></li>` to the `.nav-links` list in each page header (and the footer nav), setting `aria-current="page"` on the new page's own link.
 3. Add any page-specific styles to `assets/css/style.css` and behaviour to `assets/js/site.js` (or a new file under `assets/js/`).

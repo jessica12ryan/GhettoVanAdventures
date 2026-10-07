@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Ghetto Van Adventures</title>
+  <meta name="description" content="Contact Ghetto Van Adventures — questions, camp-spot tips, or just to say hi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- Moving road background, shared across the whole site -->
+  <div class="road" aria-hidden="true">
+    <div class="stars"></div>
+    <div class="horizon"></div>
+    <div class="tarmac"></div>
+    <div class="dashes"></div>
+  </div>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="index.html">
+        <img src="logo-gva-small.png" alt="Ghetto Van Adventures logo" width="40" height="40" />
+        <span>Ghetto <em>Van</em> Adventures</span>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="recent.html">Recent Content</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" aria-current="page">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="page">
+    <main class="wrap">
+      <section class="block" style="max-width:720px">
+        <p class="kicker">Say hello</p>
+        <h1 class="display" style="font-size:clamp(2.6rem,7vw,4rem)">Get In <span>Touch</span></h1>
+        <p class="section-sub">Questions, camp-spot tips, or just want to say hi — it lands straight in our inbox.</p>
+
+        <div class="form-note" id="form-note" hidden>
+          Message received — thanks for reaching out! We'll get back to you soon.
+        </div>
+
+        <div class="panel">
+          <form class="contact-form" action="https://formsubmit.co/GhettoVanAdventures@gmail.com" method="POST">
+            <div class="field">
+              <label for="contact-name">Name</label>
+              <input id="contact-name" name="name" type="text" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="contact-email">Email</label>
+              <input id="contact-email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="contact-subject">Subject</label>
+              <input id="contact-subject" name="subject" type="text" required />
+            </div>
+            <div class="field">
+              <label for="contact-message">Message</label>
+              <textarea id="contact-message" name="message" rows="6" required></textarea>
+            </div>
+            <!-- FormSubmit settings: subject line, readable table layout,
+                 honeypot spam trap, no captcha, return here after sending -->
+            <input type="hidden" name="_subject" value="New message from GhettoVanAdventures.com" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="hidden" name="_next" value="https://ghettovanadventures.com/contact.html?sent=1" />
+            <input type="hidden" name="_autoresponse" value="Thanks for reaching out to Ghetto Van Adventures! We got your message and will get back to you soon. — GVA" />
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+            <div>
+              <button class="btn btn-primary" type="submit">Send message</button>
+            </div>
+          </form>
+          <p class="contact-alt">
+            Prefer email? Write to
+            <a href="mailto:GhettoVanAdventures@gmail.com">GhettoVanAdventures@gmail.com</a>.
+            For ways to support the channel, see the <a href="about.html">About</a> page.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <div class="road-strip" aria-hidden="true"></div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="recent.html">Recent Content</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="footer-social">
+        <a href="https://www.youtube.com/@ghettovanadventures" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="https://x.com/ghetto_van" target="_blank" rel="noopener noreferrer">X</a>
+        <a href="https://www.instagram.com/ghettovanadventures/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </div>
+      <p class="copyright">GhettoVanAdventures.com &mdash; <span data-year>2026</span></p>
+    </div>
+  </footer>
+
+  <script>
+    // Show the confirmation banner after FormSubmit redirects back here.
+    (function () {
+      try {
+        if (new URLSearchParams(window.location.search).get('sent') === '1') {
+          var note = document.getElementById('form-note');
+          if (note) note.hidden = false;
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>
