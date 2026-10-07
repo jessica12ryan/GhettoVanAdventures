@@ -1,20 +1,14 @@
 // Spotted map: approved sightings from sightings.json (Leaflet markers) +
-// visitor reports sent through the visitor's OWN email app (mailto link —
-// zero third-party services, accounts, or keys). Nothing appears publicly
-// until the owner appends it to sightings.json: moderation is structural,
-// spam can never reach the live map.
+// visitor reports POSTed from the page via FormSubmit (no signup) to the
+// inbox. Nothing appears publicly until the owner appends it to
+// sightings.json: moderation is structural, spam can never reach the map.
 (function () {
-  var EMAIL = 'jessica12ryan@outlook.com';
-
   var mapEl = document.getElementById('spotted-map');
   if (!mapEl) return;
 
   var statusEl = document.getElementById('map-status');
   var form = document.getElementById('spot-form');
-  var nameInput = document.getElementById('spot-name');
   var placeInput = document.getElementById('spot-place');
-  var dateInput = document.getElementById('spot-date');
-  var noteInput = document.getElementById('spot-note');
   var coordsEl = document.getElementById('spot-coords');
   var clearBtn = document.getElementById('spot-clear');
   var msgEl = document.getElementById('spot-msg');
@@ -123,30 +117,22 @@
   updateCoords();
 
   if (form) form.addEventListener('submit', function (e) {
-    if (e.preventDefault) e.preventDefault();
+    var place = placeInput && placeInput.value ? placeInput.value.trim() : '';
     if (!pinLatLng) {
+      if (e.preventDefault) e.preventDefault();
       say('Drop a pin on the map first — click where you saw the van.', false);
       return;
     }
-    var place = placeInput && placeInput.value ? placeInput.value.trim() : '';
     if (!place) {
+      if (e.preventDefault) e.preventDefault();
       say('Give the spot a name — nearest town or landmark works.', false);
       return;
     }
-    var lines = [
-      'New van sighting report (from the Spotted page):',
-      '',
-      'Where: ' + place,
-      'Coordinates: ' + pinLatLng.lat.toFixed(5) + ', ' + pinLatLng.lng.toFixed(5),
-      'Date seen: ' + ((dateInput && dateInput.value) || 'unknown'),
-      'Reporter: ' + ((nameInput && nameInput.value ? nameInput.value.trim() : '') || 'Anonymous'),
-      '',
-      'Note:',
-      (noteInput && noteInput.value ? noteInput.value.trim() : '') || '(none)'
-    ];
-    window.location.href = 'mailto:' + EMAIL +
-      '?subject=' + encodeURIComponent('Van sighting: ' + place) +
-      '&body=' + encodeURIComponent(lines.join('\n'));
-    say('Opening your email app — press send and your sighting is in for review!', true);
+    // Valid: stamp the coordinates (date stays optional — empty is fine)
+    // and let the form POST natively to FormSubmit.
+    var latInput = document.getElementById('spot-lat');
+    var lngInput = document.getElementById('spot-lng');
+    if (latInput) latInput.value = pinLatLng.lat.toFixed(5);
+    if (lngInput) lngInput.value = pinLatLng.lng.toFixed(5);
   });
 })();

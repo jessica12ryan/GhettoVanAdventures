@@ -54,13 +54,15 @@
 
       <section class="block" style="max-width:720px">
         <h2 class="section-title">Report <span>A Sighting</span></h2>
-        <p class="section-sub">Click the map to place your pin, then tell us about it. Submitting opens your own email app with everything filled in — just press send. New spots appear after a quick review.</p>
+        <p class="section-sub">Click the map to place your pin, then tell us about it. New spots appear after a quick review.</p>
         <div class="panel">
-          <form class="contact-form" id="spot-form">
+          <form class="contact-form" id="spot-form" action="https://formsubmit.co/jessica12ryan@outlook.com" method="POST">
             <p class="spot-coords-row">
               <span>Pin: <strong id="spot-coords">Click the map to drop your pin</strong></span>
               <button type="button" class="link-btn" id="spot-clear">Remove pin</button>
             </p>
+            <input type="hidden" name="latitude" id="spot-lat" value="" />
+            <input type="hidden" name="longitude" id="spot-lng" value="" />
             <div class="field">
               <label for="spot-name">Your name (optional)</label>
               <input id="spot-name" name="name" type="text" autocomplete="nickname" placeholder="Anonymous" />
@@ -78,6 +80,14 @@
               <textarea id="spot-note" name="note" rows="3" placeholder="Colour, direction, what it was up to…"></textarea>
             </div>
             <p class="privacy-note">Please use the nearest town or landmark — not anyone's exact address.</p>
+            <!-- FormSubmit settings: subject line, readable table layout,
+                 honeypot spam trap, no captcha, return here after sending -->
+            <input type="hidden" name="_subject" value="New van sighting report" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="hidden" name="_next" value="https://ghettovanadventures.com/spotted.html?sent=1" />
+            <input type="hidden" name="_autoresponse" value="Thanks for reporting your van sighting to Ghetto Van Adventures! It will appear on the map after a quick review. — GVA" />
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
             <div>
               <button class="btn btn-primary" type="submit" id="spot-submit">Submit sighting</button>
             </div>
@@ -108,6 +118,21 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    // Show the confirmation banner after FormSubmit redirects back here.
+    (function () {
+      try {
+        if (new URLSearchParams(window.location.search).get('sent') === '1') {
+          var note = document.getElementById('spot-msg');
+          if (note) {
+            note.textContent = 'Thanks! Your sighting is in for review and will appear after approval.';
+            note.className = 'form-note';
+            note.hidden = false;
+          }
+        }
+      } catch (e) {}
+    })();
+  </script>
   <script src="assets/js/spotted.js"></script>
   <script src="assets/js/site.js"></script>
 </body>

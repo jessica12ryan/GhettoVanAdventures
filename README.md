@@ -91,11 +91,14 @@ No backend, no accounts, no third-party services. Approved spots live in
   "note": "Home base.", "reporter": "GVA" }
 ```
 
-Visitors drop a pin + details on `spotted.html`; submitting opens
-*their own* email app with a pre-filled report to
-`jessica12ryan@outlook.com` — they press send, you get the email.
-To approve: append the spot to `sightings.json`, commit, push. Nothing
-appears publicly until you do, so spam can never reach the live map.
+Visitors drop a pin + details on `spotted.html`; the form POSTs from the
+page via FormSubmit (free, no signup) to `jessica12ryan@outlook.com`
+with a honeypot spam trap, no captcha, and a redirect back showing a
+confirmation banner. One-time setup: submit once yourself, then click the
+activation link FormSubmit emails to that inbox. The date field is
+optional — empty submits fine. To approve: append the spot to
+`sightings.json`, commit, push. Nothing appears publicly until you do, so
+spam can never reach the live map.
 Ask visitors for nearest town/landmark, never exact addresses (stated on
 the form).
 
