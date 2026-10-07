@@ -296,6 +296,27 @@
   if (sortSelect) sortSelect.addEventListener('change', resetAndRender);
   if (sourceSelect) sourceSelect.addEventListener('change', resetAndRender);
   if (pageSizeSelect) pageSizeSelect.addEventListener('change', resetAndRender);
+  // First-press fix for strict browsers: if a warmed player is already
+  // cued, reveal it on pointerdown so the press's click lands DIRECTLY on
+  // YouTube's own play button — a genuine gesture inside the player that no
+  // autoplay policy blocks. (Right-clicks excluded; touch taps without a
+  // warmed player fall through to the click handler below.)
+  grid.addEventListener('pointerdown', function (e) {
+    try {
+      if (e.button !== undefined && e.button !== 0) return;
+      var btn = e.target && e.target.closest ? e.target.closest('[data-play]') : null;
+      if (!btn) return;
+      var box = btn.closest ? btn.closest('.post-thumb') : null;
+      if (!box || !box.classList) return;
+      var slotId = box.getAttribute ? box.getAttribute('data-slot') : null;
+      var player = (slotId && warmPlayers[slotId]) || null;
+      if (!player || !player.getPlayerState) return;
+      var YTState = (window.YT && window.YT.PlayerState) || { CUED: 5, PAUSED: 2 };
+      var state = player.getPlayerState();
+      if (state === YTState.CUED || state === YTState.PAUSED) box.classList.add('playing');
+    } catch (_) {}
+  });
+
   // Inline YouTube playback: warmed player commanded in-gesture first,
   // API-created autoplay player second, plain autoplay iframe as fallback.
   grid.addEventListener('click', function (e) {
