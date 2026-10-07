@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotted — Ghetto Van Adventures</title>
+  <meta name="description" content="Spotted the ghetto van in the wild? Drop a pin on the map." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+<body>
+
+  <!-- Moving road background, shared across the whole site -->
+  <div class="road" aria-hidden="true">
+    <div class="stars"></div>
+    <div class="horizon"></div>
+    <div class="tarmac"></div>
+    <div class="dashes"></div>
+  </div>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="index.html">
+        <img src="logo-gva-small.png" alt="Ghetto Van Adventures logo" width="40" height="40" />
+        <span>Ghetto <em>Van</em> Adventures</span>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="recent.html">Recent Content</a></li>
+        <li><a href="spotted.html" aria-current="page">Spotted</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="page">
+    <main class="wrap">
+      <section class="block">
+        <p class="kicker">Van spottings</p>
+        <h1 class="display" style="font-size:clamp(2.6rem,7vw,4rem)"><span>Spotted</span></h1>
+        <p class="section-sub">Seen the ghetto van in the wild? Drop a pin on the map.</p>
+
+        <div class="form-note" id="map-status" hidden></div>
+        <div id="spotted-map" role="application" aria-label="Map of van sightings"></div>
+      </section>
+
+      <div class="road-strip" aria-hidden="true"></div>
+
+      <section class="block" style="max-width:720px">
+        <h2 class="section-title">Report <span>A Sighting</span></h2>
+        <p class="section-sub">Click the map to place your pin, then tell us about it. New spots appear after a quick review.</p>
+        <div class="panel">
+          <form class="contact-form" id="spot-form">
+            <p class="spot-coords-row">
+              <span>Pin: <strong id="spot-coords">Click the map to drop your pin</strong></span>
+              <button type="button" class="link-btn" id="spot-clear">Remove pin</button>
+            </p>
+            <div class="field">
+              <label for="spot-name">Your name (optional)</label>
+              <input id="spot-name" name="name" type="text" autocomplete="nickname" placeholder="Anonymous" />
+            </div>
+            <div class="field">
+              <label for="spot-place">Where was it? (nearest town or landmark)</label>
+              <input id="spot-place" name="place" type="text" placeholder="e.g. Brighton, Ontario" required />
+            </div>
+            <div class="field">
+              <label for="spot-date">When? (optional)</label>
+              <input id="spot-date" name="date" type="date" />
+            </div>
+            <div class="field">
+              <label for="spot-note">Anything to add? (optional)</label>
+              <textarea id="spot-note" name="note" rows="3" placeholder="Colour, direction, what it was up to…"></textarea>
+            </div>
+            <p class="privacy-note">Please use the nearest town or landmark — not anyone's exact address.</p>
+            <div>
+              <button class="btn btn-primary" type="submit" id="spot-submit">Submit sighting</button>
+            </div>
+            <div class="form-note" id="spot-msg" hidden></div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="recent.html">Recent Content</a>
+        <a href="spotted.html">Spotted</a>
+        <a href="contact.html">Contact</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="footer-social">
+        <a href="https://www.youtube.com/@ghettovanadventures" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="https://x.com/ghetto_van" target="_blank" rel="noopener noreferrer">X</a>
+        <a href="https://www.instagram.com/ghettovanadventures/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </div>
+      <p class="copyright">GhettoVanAdventures.com &mdash; <span data-year>2026</span></p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="assets/js/site-config.js"></script>
+  <script src="assets/js/spotted.js"></script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>

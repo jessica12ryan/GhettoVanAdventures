@@ -451,6 +451,49 @@ h2.section-title span { color: var(--dust); }
 }
 .form-note[hidden] { display: none; }
 .contact-alt { margin-top: 1.4rem; color: var(--muted); font-size: 0.92rem; }
+.form-note.form-error { border-color: #b5502e; background: rgba(181, 80, 46, 0.12); }
+
+/* Spotted map */
+#spotted-map {
+  height: 420px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  position: relative;
+  z-index: 1; /* keep Leaflet panes below the sticky header */
+}
+.leaflet-container { background: #141110; font-family: inherit; }
+.leaflet-popup-content-wrapper {
+  background: var(--panel-solid);
+  color: var(--offwhite);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.leaflet-popup-content { font-size: 0.88rem; line-height: 1.55; margin: 0.9rem 1.1rem; }
+.leaflet-popup-content a { color: var(--dust); }
+.leaflet-popup-tip { background: var(--panel-solid); border: 1px solid var(--line); }
+.spot-coords-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--dust);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+.privacy-note { color: var(--fog); font-size: 0.85rem; }
+@media (max-width: 600px) {
+  #spotted-map { height: 320px; }
+}
 
 .feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
 .post-card {
