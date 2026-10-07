@@ -21,6 +21,24 @@
     x: 'View on X',
     instagram: 'View on Instagram'
   };
+  var SORT_LABEL = {
+    newest: 'newest first',
+    oldest: 'oldest first',
+    az: 'A to Z',
+    za: 'Z to A'
+  };
+  var YT_ID_RE = /^[A-Za-z0-9_-]{11}$/;
+
+  // Extract a strict 11-char YouTube id from a watch/shorts/share URL
+  // or thumbnail path. Returns '' when nothing valid is found.
+  function youtubeId(post) {
+    var m = /[?&]v=([A-Za-z0-9_-]{11})/.exec(post.url || '') ||
+      /\/(shorts|live|embed)\/([A-Za-z0-9_-]{11})/.exec(post.url || '') ||
+      /youtu\.be\/([A-Za-z0-9_-]{11})/.exec(post.url || '') ||
+      /\/vi\/([A-Za-z0-9_-]{11})\//.exec(post.thumbnail || '');
+    var id = m ? m[m.length - 1] : '';
+    return YT_ID_RE.test(id) ? id : '';
+  }
 
   function parseDate(value) {
     var t = Date.parse(value);
@@ -45,10 +63,23 @@
     var source = post.source || 'youtube';
     var label = SOURCE_LABEL[source] || source;
     var linkText = LINK_TEXT[source] || 'View post';
-    var thumb = post.thumbnail
-      ? '<div class="post-thumb"><img src="' + escapeHtml(post.thumbnail) +
-        '" alt="" loading="lazy"></div>'
-      : '<div class="post-thumb placeholder" aria-hidden="true">' + escapeHtml(label) + '</div>';
+    var vid = source === 'youtube' ? youtubeId(post) : '';
+    var thumb;
+    if (vid && post.thumbnail) {
+      // Click-to-play facade: no YouTube iframe until the visitor asks.
+      thumb = '<div class="post-thumb playable" data-video="' + vid + '">' +
+        '<img src="' + escapeHtml(post.thumbnail) + '" alt="" loading="lazy">' +
+        '<button type="button" class="play-btn" data-play="' + vid + '"' +
+        ' data-title="' + escapeHtml(post.title || 'YouTube video') + '"' +
+        ' aria-label="Play ' + escapeHtml(post.title || 'video') + ' on this page">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>' +
+        '</button></div>';
+    } else if (post.thumbnail) {
+      thumb = '<div class="post-thumb"><img src="' + escapeHtml(post.thumbnail) +
+        '" alt="" loading="lazy"></div>';
+    } else {
+      thumb = '<div class="post-thumb placeholder" aria-hidden="true">' + escapeHtml(label) + '</div>';
+    }
     return (
       '<article class="post-card">' + thumb +
         '<div class="post-body">' +
@@ -72,20 +103,36 @@
     return (n === 30 || n === 45 || n === 60) ? n : 15;
   }
 
+  function sortMode() {
+    var v = sortSelect ? sortSelect.value : 'newest';
+    return (v === 'oldest' || v === 'az' || v === 'za') ? v : 'newest';
+  }
+
+  function compareTitles(a, b, dir) {
+    var c = String(a.title || '').localeCompare(String(b.title || ''), undefined,
+      { sensitivity: 'base', numeric: true });
+    if (c === 0) c = parseDate(b.date) - parseDate(a.date); // stable tiebreak
+    return dir === 'za' ? -c : c;
+  }
+
   function getFiltered() {
-    var newestFirst = !sortSelect || sortSelect.value !== 'oldest';
+    var mode = sortMode();
     var source = sourceSelect ? sourceSelect.value : 'all';
 
     var posts = allPosts.filter(function (p) {
       return source === 'all' || p.source === source;
     });
 
-    posts.sort(function (a, b) {
-      var diff = parseDate(b.date) - parseDate(a.date);
-      return newestFirst ? diff : -diff;
-    });
+    if (mode === 'az' || mode === 'za') {
+      posts.sort(function (a, b) { return compareTitles(a, b, mode); });
+    } else {
+      var diff_sign = mode === 'oldest' ? -1 : 1;
+      posts.sort(function (a, b) {
+        return (parseDate(b.date) - parseDate(a.date)) * diff_sign;
+      });
+    }
 
-    return { posts: posts, newestFirst: newestFirst };
+    return { posts: posts, sortLabel: SORT_LABEL[mode] };
   }
 
   // Compact page list: all numbers up to 7 pages, else 1 … window … last.
@@ -153,13 +200,13 @@
 
     if (meta) {
       if (!posts.length) {
-        meta.textContent = '0 posts · ' + (result.newestFirst ? 'newest first' : 'oldest first');
+        meta.textContent = '0 posts · ' + result.sortLabel;
       } else {
         var from = (currentPage - 1) * size + 1;
         var to = Math.min(currentPage * size, posts.length);
         meta.textContent = 'Showing ' + from + '–' + to + ' of ' + posts.length +
           (posts.length === 1 ? ' post' : ' posts') +
-          ' · ' + (result.newestFirst ? 'newest first' : 'oldest first');
+          ' · ' + result.sortLabel;
       }
     }
 
@@ -173,8 +220,22 @@
   if (sortSelect) sortSelect.addEventListener('change', resetAndRender);
   if (sourceSelect) sourceSelect.addEventListener('change', resetAndRender);
   if (pageSizeSelect) pageSizeSelect.addEventListener('change', resetAndRender);
-  if (pager) pager.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest ? e.target.closest('[data-page]') : null;
+  // Inline YouTube playback: swap the thumbnail facade for the player.
+  grid.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('[data-play]') : null;
+    if (!btn) return;
+    var id = btn.getAttribute('data-play') || '';
+    if (!YT_ID_RE.test(id)) return;
+    var box = btn.closest ? btn.closest('.post-thumb') : null;
+    if (!box) return;
+    box.classList.add('playing');
+    box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
+      '?autoplay=1&rel=0" title="' + escapeHtml(btn.getAttribute('data-title') || 'YouTube video') +
+      '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ' +
+      'allowfullscreen></iframe>';
+  });
+
+  if (pager) pager.addEventListener('click', function (e) {    var btn = e.target && e.target.closest ? e.target.closest('[data-page]') : null;
     if (!btn || btn.disabled) return;
     var total = Math.max(1, Math.ceil(getFiltered().posts.length / pageSize()));
     var val = btn.getAttribute('data-page');
