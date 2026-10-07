@@ -101,7 +101,7 @@
     })
     .catch(function () {
       grid.innerHTML =
-        '<div class="feed-error">Could not load the post feed (posts.json). ' +
+        '<div class="feed-error">Could not load the latest posts right now. ' +
         'In the meantime, catch up directly on ' +
         '<a href="https://www.youtube.com/@ghettovanadventures" target="_blank" rel="noopener">YouTube</a>, ' +
         '<a href="https://x.com/ghetto_van" target="_blank" rel="noopener">X</a> or ' +
