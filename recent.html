@@ -9,6 +9,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
+  <script>
+    /* YouTube IFrame API bootstrap (loaded async below). Facade clicks can
+       then command a pre-warmed player synchronously inside the gesture,
+       which is what lets first-click playback work in strict browsers
+       like Safari. Queued warm-ups run once the API is ready. */
+    window.__ytApiQueue = window.__ytApiQueue || [];
+    window.onYouTubeIframeAPIReady = function () {
+      var q = window.__ytApiQueue.splice(0);
+      for (var i = 0; i < q.length; i++) { try { q[i](); } catch (e) {} }
+    };
+  </script>
+  <script src="https://www.youtube.com/iframe_api" async></script>
 </head>
 <body>
 
