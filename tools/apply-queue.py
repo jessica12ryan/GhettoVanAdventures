@@ -18,6 +18,9 @@ import sys
 import urllib.request
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import feedlib
+
 ROOT = Path(__file__).resolve().parent.parent
 POSTS_FILE = ROOT / "posts.json"
 QUEUE_FILE = ROOT / "social-queue.txt"
@@ -143,7 +146,7 @@ def main():
         return
 
     data = json.loads(POSTS_FILE.read_text())
-    before = json.dumps(data.get("posts", []), sort_keys=True)
+    before = feedlib.snapshot(data.get("posts", []))
     by_id = {p["id"]: p for p in data.get("posts", [])}
 
     added = 0
@@ -157,8 +160,8 @@ def main():
             by_id[card["id"]] = card
             added += 1
 
-    data["posts"] = sorted(by_id.values(), key=lambda p: p.get("date", ""), reverse=True)
-    if json.dumps(data["posts"], sort_keys=True) == before:
+    data["posts"] = feedlib.sort_posts(by_id.values())
+    if feedlib.snapshot(data["posts"]) == before:
         log("Queue unchanged. posts.json left untouched.")
         return
 

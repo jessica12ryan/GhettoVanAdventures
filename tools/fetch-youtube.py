@@ -31,19 +31,22 @@ posts.json only when something changed. Run it by hand any time to preview.
 """
 
 import json
+import sys
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import feedlib
+
 CHANNEL_ID = "UC10tXd2bgXh1sFqG89shP5w"
 FEED_URL = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
 ROOT = Path(__file__).resolve().parent.parent
 POSTS_FILE = ROOT / "posts.json"
-# The RSS feed only ever shows the latest ~15 uploads, but posts.json also
-# holds the full backfilled archive — keep the cap well above the channel's
-# total video count so hourly runs never trim history away.
-MAX_KEEP = 3000  # max YouTube entries retained in posts.json
+# No retention cap: the RSS feed only ever shows the latest ~15 uploads, but
+# posts.json also holds the full backfilled archive, and hourly runs must
+# never trim history away.
 
 NS = {
     "a": "http://www.w3.org/2005/Atom",
@@ -107,16 +110,14 @@ def main():
             existing[v["id"]] = v
             added += 1
 
-    before = json.dumps(data.get("posts", []), sort_keys=True)
+    before = feedlib.snapshot(data.get("posts", []))
 
-    yt_posts = sorted(existing.values(), key=lambda p: p["date"], reverse=True)[:MAX_KEEP]
+    yt_posts = sorted(existing.values(), key=lambda p: p["date"], reverse=True)
     other_posts = [p for p in data.get("posts", []) if p.get("source") != "youtube"]
 
-    data["posts"] = sorted(
-        yt_posts + other_posts, key=lambda p: p.get("date", ""), reverse=True
-    )
+    data["posts"] = feedlib.sort_posts(yt_posts + other_posts)
 
-    if json.dumps(data["posts"], sort_keys=True) == before:
+    if feedlib.snapshot(data["posts"]) == before:
         print(f"No changes ({len(yt_posts)} YouTube + {len(other_posts)} other entries). "
               "posts.json left untouched.")
         return

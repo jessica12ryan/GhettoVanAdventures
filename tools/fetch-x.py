@@ -29,14 +29,16 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import feedlib
+
 HANDLE = "ghetto_van"
 TIMELINE_URL = f"https://api.fxtwitter.com/2/profile/{HANDLE}/statuses"
 ROOT = Path(__file__).resolve().parent.parent
 POSTS_FILE = ROOT / "posts.json"
-# Well above the account's total post count so hourly runs (and backfills)
-# never trim history away.
-MAX_KEEP = 500  # max auto-imported X posts retained
-MAX_PAGES = 30  # timeline pagination safety cap (~20 posts per page)
+# No retention cap and no page cap: every timeline post is kept, and
+# pagination follows bottom cursors until the API returns an empty page or
+# no further cursor. Hourly runs must never trim history away.
 TITLE_LEN = 120
 
 
@@ -68,7 +70,9 @@ def fetch_all_pages():
     results list, or None if even the first page failed."""
     combined = []
     cursor = None
-    for page in range(1, MAX_PAGES + 1):
+    page = 0
+    while True:
+        page += 1
         url = TIMELINE_URL + (("?cursor=" + urllib.parse.quote(cursor)) if cursor else "")
         try:
             payload = fetch_page(url)
@@ -150,7 +154,7 @@ def main():
         return
 
     data = json.loads(POSTS_FILE.read_text())
-    before = json.dumps(data.get("posts", []), sort_keys=True)
+    before = feedlib.snapshot(data.get("posts", []))
 
     managed = {p["id"]: p for p in data.get("posts", [])
                if p.get("source") == "x" and re.fullmatch(r"x-\d+", p.get("id", ""))}
@@ -159,12 +163,12 @@ def main():
             card["excerpt"] = managed[card["id"]]["excerpt"]  # keep hand-written text
         managed[card["id"]] = card
 
-    kept = sorted(managed.values(), key=lambda p: p["date"], reverse=True)[:MAX_KEEP]
+    kept = sorted(managed.values(), key=lambda p: p["date"], reverse=True)
     rest = [p for p in data.get("posts", [])
             if not (p.get("source") == "x" and re.fullmatch(r"x-\d+", p.get("id", "")))]
-    data["posts"] = sorted(kept + rest, key=lambda p: p.get("date", ""), reverse=True)
+    data["posts"] = feedlib.sort_posts(kept + rest)
 
-    if json.dumps(data["posts"], sort_keys=True) == before:
+    if feedlib.snapshot(data["posts"]) == before:
         log(f"No new X posts ({len(kept)} tracked). posts.json left untouched.")
         return
 
