@@ -43,7 +43,7 @@ POSTS_FILE = ROOT / "posts.json"
 # The RSS feed only ever shows the latest ~15 uploads, but posts.json also
 # holds the full backfilled archive — keep the cap well above the channel's
 # total video count so hourly runs never trim history away.
-MAX_KEEP = 2000  # max YouTube entries retained in posts.json
+MAX_KEEP = 3000  # max YouTube entries retained in posts.json
 
 NS = {
     "a": "http://www.w3.org/2005/Atom",
