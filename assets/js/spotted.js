@@ -53,10 +53,13 @@
   }
 
   var map = window.L.map('spotted-map').setView([44.5, -78.5], 6);
-  // Esri dark-gray canvas: free, no key, matches the night-road theme.
-  // (CARTO's free tiles now demand an API key, so they can't be used.)
+  // Esri dark-gray canvas + matching labels overlay: free, no key, matches
+  // the night-road theme. (CARTO's free tiles now demand an API key.)
   window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ &amp; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 18
+  }).addTo(map);
+  window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 18
   }).addTo(map);
 
