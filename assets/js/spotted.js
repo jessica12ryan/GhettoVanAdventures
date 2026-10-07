@@ -1,12 +1,14 @@
-// Spotted map: Leaflet markers from Supabase (approved only) + visitor
-// submissions saved as pending for one-click approval in the dashboard.
-// Needs assets/js/site-config.js filled in; without it the page shows a
-// "coming soon" notice instead of breaking.
+// Spotted map: approved sightings from sightings.json (Leaflet markers) +
+// visitor reports sent through the visitor's OWN email app (mailto link —
+// zero third-party services, accounts, or keys). Nothing appears publicly
+// until the owner appends it to sightings.json: moderation is structural,
+// spam can never reach the live map.
 (function () {
+  var EMAIL = 'GhettoVanAdventures@gmail.com';
+
   var mapEl = document.getElementById('spotted-map');
   if (!mapEl) return;
 
-  var cfg = window.GVA_CONFIG || {};
   var statusEl = document.getElementById('map-status');
   var form = document.getElementById('spot-form');
   var nameInput = document.getElementById('spot-name');
@@ -15,14 +17,7 @@
   var noteInput = document.getElementById('spot-note');
   var coordsEl = document.getElementById('spot-coords');
   var clearBtn = document.getElementById('spot-clear');
-  var submitBtn = document.getElementById('spot-submit');
   var msgEl = document.getElementById('spot-msg');
-
-  function configured() {
-    return !!(cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY &&
-      cfg.SUPABASE_URL.indexOf('YOUR-') !== 0 &&
-      cfg.SUPABASE_ANON_KEY.indexOf('YOUR-') !== 0);
-  }
 
   function notice(msg) {
     if (statusEl) { statusEl.textContent = msg; statusEl.hidden = false; }
@@ -43,18 +38,6 @@
       .replace(/"/g, '&quot;');
   }
 
-  function api(path, options) {
-    options = options || {};
-    var extra = options.headers || {};
-    options.headers = {
-      apikey: cfg.SUPABASE_ANON_KEY,
-      Authorization: 'Bearer ' + cfg.SUPABASE_ANON_KEY,
-      'Content-Type': 'application/json'
-    };
-    for (var k in extra) options.headers[k] = extra[k];
-    return fetch(cfg.SUPABASE_URL.replace(/\/$/, '') + path, options);
-  }
-
   function popupHtml(s) {
     var date = s.date_seen || 'Date unknown';
     var html = '<strong>' + escapeHtml(s.place || 'Van sighting') + '</strong><br>' +
@@ -62,12 +45,6 @@
     if (s.note) html += '<br>' + escapeHtml(s.note);
     html += '<br><em>— ' + escapeHtml(s.reporter || 'Anonymous') + '</em>';
     return html;
-  }
-
-  if (!configured()) {
-    notice('The sightings map is gearing up — check back soon!');
-    if (form) form.hidden = true;
-    return;
   }
 
   if (!window.L) {
@@ -82,13 +59,13 @@
     maxZoom: 20
   }).addTo(map);
 
-  api('/rest/v1/sightings?approved=eq.true&order=date_seen.desc.nullslast&select=id,lat,lng,place,date_seen,note,reporter')
+  fetch('sightings.json')
     .then(function (res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
     })
-    .then(function (rows) {
-      rows = Array.isArray(rows) ? rows : [];
+    .then(function (data) {
+      var rows = (data && Array.isArray(data.sightings)) ? data.sightings : [];
       var bounds = [];
       rows.forEach(function (s) {
         if (typeof s.lat !== 'number' || typeof s.lng !== 'number') return;
@@ -98,10 +75,10 @@
       if (bounds.length && map.fitBounds) {
         try { map.fitBounds(bounds, { padding: [40, 40], maxZoom: 10 }); } catch (_) {}
       }
-      if (!rows.length) notice('No approved sightings yet — be the first to drop a pin!');
+      if (!rows.length) notice('No sightings yet — be the first to report one below!');
     })
     .catch(function () {
-      notice('Could not load sightings right now. The map below still takes reports.');
+      notice('Could not load sightings right now. The form below still works.');
     });
 
   var pin = null;
@@ -152,34 +129,20 @@
       say('Give the spot a name — nearest town or landmark works.', false);
       return;
     }
-    if (submitBtn) submitBtn.disabled = true;
-    var body = {
-      lat: pinLatLng.lat,
-      lng: pinLatLng.lng,
-      place: place,
-      date_seen: (dateInput && dateInput.value) || null,
-      note: (noteInput && noteInput.value ? noteInput.value.trim() : ''),
-      reporter: (nameInput && nameInput.value ? nameInput.value.trim() : '') || 'Anonymous',
-      approved: false
-    };
-    api('/rest/v1/sightings', {
-      method: 'POST',
-      headers: { Prefer: 'return=representation' },
-      body: JSON.stringify(body)
-    })
-      .then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        say('Thanks! Your sighting is in for review and will appear after approval.', true);
-        form.reset();
-        pinLatLng = null;
-        try { if (pin && pin.remove) pin.remove(); } catch (_) {}
-        pin = null;
-        updateCoords();
-      })
-      .catch(function () {
-        say('Could not send that just now — check your connection and try again.', false);
-      });
-    // Re-enable submit shortly after (success and failure paths converge here).
-    setTimeout(function () { if (submitBtn) submitBtn.disabled = false; }, 1500);
+    var lines = [
+      'New van sighting report (from the Spotted page):',
+      '',
+      'Where: ' + place,
+      'Coordinates: ' + pinLatLng.lat.toFixed(5) + ', ' + pinLatLng.lng.toFixed(5),
+      'Date seen: ' + ((dateInput && dateInput.value) || 'unknown'),
+      'Reporter: ' + ((nameInput && nameInput.value ? nameInput.value.trim() : '') || 'Anonymous'),
+      '',
+      'Note:',
+      (noteInput && noteInput.value ? noteInput.value.trim() : '') || '(none)'
+    ];
+    window.location.href = 'mailto:' + EMAIL +
+      '?subject=' + encodeURIComponent('Van sighting: ' + place) +
+      '&body=' + encodeURIComponent(lines.join('\n'));
+    say('Opening your email app — press send and your sighting is in for review!', true);
   });
 })();

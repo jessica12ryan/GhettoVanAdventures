@@ -1,0 +1,13 @@
+{
+  "sightings": [
+    {
+      "id": "brighton-home",
+      "lat": 44.0426,
+      "lng": -77.7379,
+      "place": "Brighton, Ontario",
+      "date_seen": null,
+      "note": "Home base — where the van adventures begin.",
+      "reporter": "GVA"
+    }
+  ]
+}

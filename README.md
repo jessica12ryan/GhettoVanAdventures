@@ -6,7 +6,7 @@ This repository hosts the public web files for [GhettoVanAdventures.com](http://
 - `recent.html` — Recent Content: unified feed (YouTube + X + Instagram) with **Newest → Oldest / Oldest → Newest** dropdown + source filter, plus live embeds.
 - `about.html` — About: story, facts, support info. Built with room to grow.
 - `contact.html` — Contact: name/email/subject/message form that emails submissions to `GhettoVanAdventures@gmail.com`.
-- `spotted.html` — Spotted: visitor sightings map (Leaflet, no API key) backed by Supabase; see below.
+- `spotted.html` — Spotted: visitor sightings map (Leaflet, no API key) driven by `sightings.json`; see below.
 - `assets/css/style.css` — shared styles, including the moving-road background (`.road`) and the slim in-page divider (`.road-strip`).
 - `assets/js/site.js` — mobile nav + footer year. `assets/js/recent.js` — feed rendering/sorting. `assets/js/spotted.js` — sightings map.
 
@@ -80,24 +80,24 @@ link FormSubmit emails to the inbox. Until then, submissions are held.
 To re-enable its captcha, delete the `_captcha` hidden field in
 `contact.html`.
 
-## Spotted sightings map (Supabase)
+## Spotted sightings map (`sightings.json`)
 
-Visitors drop a pin + details on `spotted.html`; rows save as
-`approved = false` and appear publicly only after you approve them in the
-Supabase Table Editor (filter `approved = false`, flip to `true`) — one
-click each, live immediately, no deploy.
+No backend, no accounts, no third-party services. Approved spots live in
+`sightings.json`:
 
-One-time setup (~15 min, all free):
-1. Create a project at https://supabase.com, open its SQL Editor.
-2. Paste + run `tools/supabase-schema.sql` (table, Row Level Security,
-   Brighton home-base seed marker).
-3. Copy the Project URL + anon public key into `assets/js/site-config.js`.
+```json
+{ "id": "brighton-home", "lat": 44.0426, "lng": -77.7379,
+  "place": "Brighton, Ontario", "date_seen": null,
+  "note": "Home base.", "reporter": "GVA" }
+```
 
-Security notes: the anon key is public by design — RLS is the boundary
-(public reads approved-only; public inserts forced unapproved; only the
-dashboard can approve/edit/delete). Until the config is filled in, the
-page shows a "gearing up" notice instead of breaking. Ask visitors for
-nearest town/landmark, never exact addresses (stated on the form).
+Visitors drop a pin + details on `spotted.html`; submitting opens
+*their own* email app with a pre-filled report to
+`GhettoVanAdventures@gmail.com` — they press send, you get the email.
+To approve: append the spot to `sightings.json`, commit, push. Nothing
+appears publicly until you do, so spam can never reach the live map.
+Ask visitors for nearest town/landmark, never exact addresses (stated on
+the form).
 
 ## Adding pages (room for expansion)1. Copy `about.html` to e.g. `tour.html`, swap the `<main>` content.
 2. Add one `<li><a href="tour.html">…</a></li>` to the `.nav-links` list in each page header (and the footer nav), setting `aria-current="page"` on the new page's own link.
