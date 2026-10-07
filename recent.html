@@ -9,6 +9,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- Early connections for the YouTube players + thumbnails -->
+  <link rel="preconnect" href="https://www.youtube-nocookie.com" />
+  <link rel="preconnect" href="https://i.ytimg.com" />
+  <link rel="preconnect" href="https://s.ytimg.com" />
+  <!-- Feed data: start fetching before the scripts at the end of body run -->
+  <link rel="preload" href="posts.json" as="fetch" crossorigin />
 </head>
 <body>
 
@@ -23,7 +29,7 @@
   <header class="site-header">
     <nav class="nav" aria-label="Main navigation">
       <a class="brand" href="index.html">
-        <img src="logo-gva.png" alt="Ghetto Van Adventures logo" />
+        <img src="logo-gva-small.png" alt="Ghetto Van Adventures logo" width="40" height="40" />
         <span>Ghetto <em>Van</em> Adventures</span>
       </a>
       <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">&#9776;</button>
@@ -131,7 +137,32 @@
     </div>
   </footer>
 
-  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <script>
+    // X timeline lives far below the fold: only fetch its widget library
+    // once the reader scrolls near it, keeping initial load for the feed.
+    (function () {
+      function loadX() {
+        if (document.querySelector('script[data-x-widgets]')) return;
+        var s = document.createElement('script');
+        s.src = 'https://platform.twitter.com/widgets.js';
+        s.async = true;
+        s.setAttribute('data-x-widgets', '1');
+        document.body.appendChild(s);
+      }
+      var anchor = document.querySelector('.x-timeline');
+      if (!anchor) return;
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          for (var i = 0; i < entries.length; i++) {
+            if (entries[i].isIntersecting) { io.disconnect(); loadX(); return; }
+          }
+        }, { rootMargin: '400px 0px' });
+        io.observe(anchor);
+      } else {
+        loadX();
+      }
+    })();
+  </script>
   <script src="assets/js/site.js"></script>
   <script src="assets/js/recent.js"></script>
 </body>
