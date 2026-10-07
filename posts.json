@@ -17,15 +17,6 @@
       "excerpt": "A vanlife taste-test of Sprite Chill Mango Citrus \u2014 verdict inside."
     },
     {
-      "id": "x-profile",
-      "source": "x",
-      "title": "Roadside updates on X \u2014 @ghetto_van",
-      "url": "https://x.com/ghetto_van",
-      "date": "2026-10-06",
-      "thumbnail": "",
-      "excerpt": "Quick updates, roadside finds and camp chatter. X has no public feed for static sites, so this card links to the live profile \u2014 replace it with individual post URLs as you share them."
-    },
-    {
       "id": "yt-vPZ9szuiUaY",
       "source": "youtube",
       "title": "McDonald's Snickers McFlurry... The Vanlife Review",
@@ -159,6 +150,177 @@
       "date": "2026-07-26",
       "thumbnail": "https://i.ytimg.com/vi/dX0cKqXQ9g4/hqdefault.jpg",
       "excerpt": "Creamy dill pickle Ruffles \u2014 snack review from the van."
+    },
+    {
+      "id": "x-1374964282710913025",
+      "source": "x",
+      "title": "The ghetto van at dusk",
+      "url": "https://x.com/ghetto_van/status/1374964282710913025",
+      "date": "2021-03-25",
+      "thumbnail": "https://pbs.twimg.com/media/ExTauCeUYAMoida.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1146606631846760448",
+      "source": "x",
+      "title": "My million dollar view courtesy of van life",
+      "url": "https://x.com/ghetto_van/status/1146606631846760448",
+      "date": "2019-07-04",
+      "thumbnail": "https://pbs.twimg.com/media/D-mQph6U0AAJ7-W.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1146239050312871937",
+      "source": "x",
+      "title": "Nothing like a good fire when you\u2019re parked in the middle of nowhere.",
+      "url": "https://x.com/ghetto_van/status/1146239050312871937",
+      "date": "2019-07-03",
+      "thumbnail": "https://pbs.twimg.com/media/D-hCTqgUIAELyOI.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1145516429145337856",
+      "source": "x",
+      "title": "You never know where a back Road will take you",
+      "url": "https://x.com/ghetto_van/status/1145516429145337856",
+      "date": "2019-07-01",
+      "thumbnail": "https://pbs.twimg.com/media/D-WxHVwUwAEuP1S.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1144798190484410374",
+      "source": "x",
+      "title": "Over a bridge in the ghetto van. What a view!",
+      "url": "https://x.com/ghetto_van/status/1144798190484410374",
+      "date": "2019-06-29",
+      "thumbnail": "https://pbs.twimg.com/media/D-Mj4IRVAAYFucF.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1144408414904176640",
+      "source": "x",
+      "title": "Now that was neat to see as I\u2019m traveling. There was hundreds of license plates.",
+      "url": "https://x.com/ghetto_van/status/1144408414904176640",
+      "date": "2019-06-28",
+      "thumbnail": "https://pbs.twimg.com/media/D-HBXaKUIAA8g90.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1144077601926873088",
+      "source": "x",
+      "title": "Spending the night here looking at this view.",
+      "url": "https://x.com/ghetto_van/status/1144077601926873088",
+      "date": "2019-06-27",
+      "thumbnail": "https://pbs.twimg.com/media/D-CUf8zUIAE6OrO.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1143371216557752320",
+      "source": "x",
+      "title": "A beautiful Nova Scotia night",
+      "url": "https://x.com/ghetto_van/status/1143371216557752320",
+      "date": "2019-06-25",
+      "thumbnail": "https://pbs.twimg.com/media/D94SC5rUYAEOwDV.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1142879273876803586",
+      "source": "x",
+      "title": "Definitely worth the two hour walk.",
+      "url": "https://x.com/ghetto_van/status/1142879273876803586",
+      "date": "2019-06-23",
+      "thumbnail": "https://pbs.twimg.com/media/D9xSmdAUwAAQdxt.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1142251323141656576",
+      "source": "x",
+      "title": "What a view to end the day",
+      "url": "https://x.com/ghetto_van/status/1142251323141656576",
+      "date": "2019-06-22",
+      "thumbnail": "https://pbs.twimg.com/media/D9oXg98VUAAWnrf.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1140304791932825601",
+      "source": "x",
+      "title": "There\u2019s nothing like being by the water",
+      "url": "https://x.com/ghetto_van/status/1140304791932825601",
+      "date": "2019-06-16",
+      "thumbnail": "https://pbs.twimg.com/media/D9MtKRCVUAI8OJC.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1136395881236877313",
+      "source": "x",
+      "title": "Looking at the moon in the afternoon #vanlife #rvlife #campervanlife",
+      "url": "https://x.com/ghetto_van/status/1136395881236877313",
+      "date": "2019-06-05",
+      "thumbnail": "https://pbs.twimg.com/media/D8VKBn8UwAAvWso.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1135369753026093056",
+      "source": "x",
+      "title": "I love a camp fire #vanlife #campervanlife #rvliving",
+      "url": "https://x.com/ghetto_van/status/1135369753026093056",
+      "date": "2019-06-03",
+      "thumbnail": "https://pbs.twimg.com/media/D8GkxJQWsAA5Ay3.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1134471378751692801",
+      "source": "x",
+      "title": "Nothing like a small town carnival #vanlife #RVlife #campervan",
+      "url": "https://x.com/ghetto_van/status/1134471378751692801",
+      "date": "2019-05-31",
+      "thumbnail": "https://pbs.twimg.com/media/D75zss9X4AA-C0m.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1130590562267140096",
+      "source": "x",
+      "title": "Perfect spot to spend the night #vanlife #rvlife #campervanlife",
+      "url": "https://x.com/ghetto_van/status/1130590562267140096",
+      "date": "2019-05-20",
+      "thumbnail": "https://pbs.twimg.com/media/D7CqHcMXsAAOWBX.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1129425766494687233",
+      "source": "x",
+      "title": "The big fiddle in Sydney Nova Scotia #vanlife #rvlife #campervanlife",
+      "url": "https://x.com/ghetto_van/status/1129425766494687233",
+      "date": "2019-05-17",
+      "thumbnail": "https://pbs.twimg.com/media/D6yGvd7XYAAKhIQ.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1128293587660226560",
+      "source": "x",
+      "title": "Beautiful Blue water and blue skies #vanlife #rvlife #campervanlife",
+      "url": "https://x.com/ghetto_van/status/1128293587660226560",
+      "date": "2019-05-14",
+      "thumbnail": "https://pbs.twimg.com/media/D6iBBy2WwAAYkgM.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1125943314635743232",
+      "source": "x",
+      "title": "Van life at night rocks! #vanlife #rvlife #campervanlife",
+      "url": "https://x.com/ghetto_van/status/1125943314635743232",
+      "date": "2019-05-08",
+      "thumbnail": "https://pbs.twimg.com/media/D6AneRHWkAAQMmv.jpg?name=small",
+      "excerpt": ""
+    },
+    {
+      "id": "x-1124829498829094913",
+      "source": "x",
+      "title": "Who doesn't love a beautiful sunset? #vanlife #rvlife #campervanlife",
+      "url": "https://x.com/ghetto_van/status/1124829498829094913",
+      "date": "2019-05-05",
+      "thumbnail": "https://pbs.twimg.com/media/D5wydmGW0AEn93X.jpg?name=small",
+      "excerpt": ""
     }
   ]
 }

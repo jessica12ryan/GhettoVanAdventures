@@ -1,0 +1,53 @@
+# Hourly content refresh: YouTube RSS + X timeline + social queue.
+# Commits posts.json only when a script actually changed it, then Pages
+# redeploys on the push. No API keys anywhere in this pipeline.
+#
+# Notes:
+# - Cron runs in UTC. GitHub may delay scheduled runs by a few minutes.
+# - GitHub pauses scheduled workflows after 60 days with no repo activity;
+#   any push or manual run re-arms the schedule.
+# - "Run workflow" button (workflow_dispatch) triggers a refresh on demand.
+name: Update content feed
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-feed
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh YouTube entries
+        run: python3 tools/fetch-youtube.py
+
+      - name: Refresh X entries
+        run: python3 tools/fetch-x.py
+
+      - name: Apply social queue
+        run: python3 tools/apply-queue.py
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- posts.json; then
+            echo "No feed changes."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add posts.json
+            git commit -m "Update content feed [skip ci]"
+            git push
+          fi

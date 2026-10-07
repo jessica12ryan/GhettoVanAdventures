@@ -24,20 +24,46 @@ The feed is driven by `posts.json`:
 - `source` is one of `youtube`, `x`, `instagram`.
 - The page sorts **newest → oldest** by default; the dropdown flips to oldest-first.
 
-### Keeping YouTube fresh (automatic, no API key)
+### Automatic hourly updates (no API keys)
 
-```sh
-python3 tools/fetch-youtube.py
+`.github/workflows/update-posts.yml` runs every hour and commits `posts.json`
+only when something changed (Pages redeploys on the push). Latency from
+upload to feed card is roughly an hour. It runs three steps:
+
+1. `tools/fetch-youtube.py` — pulls the channel RSS feed
+   (`UC10tXd2bgXh1sFqG89shP5w`), adds new uploads, refreshes changed titles.
+2. `tools/fetch-x.py` — polls the free FxEmbed timeline for `@ghetto_van`
+   and upserts original posts (text, date, photo thumbnails; retweets and
+   replies skipped). Any error exits without touching `posts.json`, so a
+   third-party outage can never wipe the feed.
+3. `tools/apply-queue.py` — converts `social-queue.txt` lines into cards.
+
+You can also trigger a run on demand from the Actions tab ("Run workflow"),
+and run any script by hand to preview (`git diff posts.json` afterwards).
+
+Two GitHub caveats: cron runs in UTC and may drift a few minutes under load;
+and GitHub pauses scheduled workflows after 60 days with no repo activity —
+any push or manual run re-arms the schedule.
+
+### Featuring X / Instagram posts by hand (`social-queue.txt`)
+
+Append one line per post (append-only log, re-runs are harmless):
+
+```text
+x | https://x.com/ghetto_van/status/1234567890
+instagram | https://www.instagram.com/ghettovanadventures/p/ABC123/ | 2026-10-08 | Camp sunset
 ```
 
-This pulls the channel RSS feed (`UC10tXd2bgXh1sFqG89shP5w`), adds new uploads, and leaves hand-added X/Instagram entries alone. Run it weekly, or schedule it with a GitHub Action (cron) that commits the updated `posts.json`.
+- X lines need only the URL — text, date and thumbnail resolve automatically.
+  (Also a backup if the timeline ever misses a post.)
+- Instagram serves nothing to unauthenticated requests (verified: post pages
+  return a login wall), so IG lines must include `date` and `title` by hand.
+  The `ig-profile` card in `posts.json` links to the live profile meanwhile.
 
-### X & Instagram
+### X & Instagram embeds
 
-X and Instagram offer no public feed usable from a static site (X needs a paid API, Instagram needs an app token), so:
-
-- The **Live Feeds** section on `recent.html` embeds the X timeline (via `platform.twitter.com/widgets.js`) and always-current YouTube uploads playlist — these update themselves.
-- Individual X/Instagram posts are added **by hand** to `posts.json` with their post URL, e.g. `"url": "https://x.com/ghetto_van/status/<id>"`. The two profile-link cards already in `posts.json` (`x-profile`, `ig-profile`) are placeholders — replace them with real post URLs over time.
+- The **Live Feeds** section on `recent.html` embeds the X timeline (via `platform.twitter.com/widgets.js`) and always-current YouTube uploads playlist — these update themselves in real time.
+- To feature a single Instagram post as a card, add its URL to `social-queue.txt` (see above) instead of editing `posts.json` directly.
 
 ## Adding pages (room for expansion)
 

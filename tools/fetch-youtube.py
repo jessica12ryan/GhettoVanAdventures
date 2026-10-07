@@ -26,8 +26,8 @@ those posts by hand in posts.json using the same shape:
       "excerpt": "Optional one-liner."
     }
 
-Tip: run this weekly, or wire it to a GitHub Action with a cron
-schedule so Recent Content stays fresh automatically.
+Tip: this runs hourly via .github/workflows/update-posts.yml, which commits
+posts.json only when something changed. Run it by hand any time to preview.
 """
 
 import json
@@ -104,12 +104,20 @@ def main():
             existing[v["id"]] = v
             added += 1
 
+    before = json.dumps(data.get("posts", []), sort_keys=True)
+
     yt_posts = sorted(existing.values(), key=lambda p: p["date"], reverse=True)[:MAX_KEEP]
     other_posts = [p for p in data.get("posts", []) if p.get("source") != "youtube"]
 
     data["posts"] = sorted(
         yt_posts + other_posts, key=lambda p: p.get("date", ""), reverse=True
     )
+
+    if json.dumps(data["posts"], sort_keys=True) == before:
+        print(f"No changes ({len(yt_posts)} YouTube + {len(other_posts)} other entries). "
+              "posts.json left untouched.")
+        return
+
     data["updated"] = date.today().isoformat()
     POSTS_FILE.write_text(json.dumps(data, indent=2) + "\n")
 
