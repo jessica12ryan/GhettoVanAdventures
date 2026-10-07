@@ -1,7 +1,7 @@
 // Recent Content feed: renders posts.json newest-first by default,
 // with dropdowns for sort order, source filter, and page size,
-// numbered pagination, and inline YouTube playback (API-warmed players
-// so first-click works in strict browsers like Safari).
+// numbered pagination, and inline YouTube playback (real players
+// preloaded near the viewport so taps land on YouTube directly).
 (function () {
   var grid = document.getElementById('feed-grid');
   var sortSelect = document.getElementById('sort-order');
@@ -184,7 +184,6 @@
   }
 
   function render(scroll) {
-    destroyPlayers(); // stop any playing video before replacing the grid
     var result = getFiltered();
     var posts = result.posts;
     var size = pageSize();
@@ -199,6 +198,7 @@
       grid.innerHTML = posts.slice(start, start + size).map(cardHtml).join('');
     }
     renderPager(posts.length ? totalPages : 0);
+    observeFacades(); // swap near-viewport facades for real players
 
     if (meta) {
       if (!posts.length) {
@@ -220,85 +220,65 @@
   function resetAndRender() { currentPage = 1; render(false); }
 
   // ── Inline playback ──────────────────────────────────────────────
-  // Safari does not track the click gesture across the async iframe load,
-  // so a plain autoplay iframe needs two taps on first play. Strategy:
-  // warm a real YT.Player (cued, paused) behind the thumbnail on
-  // hover/focus, then issue playVideo()/loadVideoById() synchronously
-  // inside the click gesture — the strongest playback signal browsers
-  // accept. Falls back to an API-created autoplay player, then to a
-  // plain autoplay iframe.
-  var ytSlotN = 0;
-  var warmPlayers = {};
+  // Facades stay light until a card nears the viewport; then an
+  // IntersectionObserver swaps in the REAL paused YouTube player, so the
+  // visitor's tap lands directly on YouTube's own play button — a genuine
+  // in-player gesture no autoplay policy blocks (Safari included).
+  // Cards never observed (old browsers, data-saver mode) keep the facade
+  // and load an autoplay player on click as fallback.
+  var feedObserver = null;
 
-  function ytReady() { return !!(window.YT && window.YT.Player); }
+  function playerHtml(id, title, autoplay) {
+    return '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
+      '?rel=0&playsinline=1' + (autoplay ? '&autoplay=1' : '') +
+      '" title="' + escapeHtml(title || 'YouTube video') +
+      '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ' +
+      'allowfullscreen></iframe>';
+  }
 
-  function whenYTReady(fn) {
-    if (ytReady()) { fn(); return; }
+  function swapFacade(btn) {
     try {
-      window.__ytApiQueue = window.__ytApiQueue || [];
-      window.__ytApiQueue.push(fn);
+      var box = btn.closest ? btn.closest('.post-thumb') : null;
+      if (!box) return;
+      if (box.getAttribute && box.getAttribute('data-player') === 'ready') return;
+      var id = btn.getAttribute ? (btn.getAttribute('data-play') || '') : '';
+      if (!YT_ID_RE.test(id)) return;
+      var title = btn.getAttribute('data-title') || 'YouTube video';
+      if (box.setAttribute) box.setAttribute('data-player', 'ready');
+      box.innerHTML = playerHtml(id, title, false);
     } catch (_) {}
   }
 
-  function destroyPlayers() {
-    for (var k in warmPlayers) {
-      try { if (warmPlayers[k] && warmPlayers[k].destroy) warmPlayers[k].destroy(); } catch (_) {}
-    }
-    warmPlayers = {};
-  }
-
-  function createPlayer(box, id, autoplay) {
-    var slot = document.createElement('div');
-    slot.className = 'yt-slot';
-    slot.id = 'yt-slot-' + (++ytSlotN);
-    box.appendChild(slot);
-    box.setAttribute('data-slot', slot.id);
-    var player = new window.YT.Player(slot.id, {
-      height: '100%',
-      width: '100%',
-      videoId: id,
-      playerVars: autoplay ? { autoplay: 1, rel: 0, playsinline: 1 } : { rel: 0, playsinline: 1 },
-      events: {
-        onReady: function (e) {
-          try { autoplay ? e.target.playVideo() : e.target.cueVideoById(id); } catch (_) {}
-        }
+  function observeFacades() {
+    if (!('IntersectionObserver' in window)) return;
+    try {
+      var conn = (typeof navigator !== 'undefined' && navigator.connection) || null;
+      if (conn && conn.saveData) return; // stay light; click-to-load covers playback
+    } catch (_) {}
+    try {
+      if (!feedObserver) {
+        feedObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            feedObserver.unobserve(entry.target);
+            swapFacade(entry.target);
+          });
+        }, { rootMargin: '300px 0px' });
+      } else {
+        feedObserver.disconnect(); // drop detached cards from last render
       }
-    });
-    warmPlayers[slot.id] = player;
-    return player;
-  }
-
-  function warmFacade(btn) {
-    if (!btn || btn.getAttribute('data-warmed')) return;
-    var box = btn.closest ? btn.closest('.post-thumb') : null;
-    if (!box || !box.appendChild) return;
-    var id = btn.getAttribute('data-play') || '';
-    if (!YT_ID_RE.test(id)) return;
-    btn.setAttribute('data-warmed', '1');
-    whenYTReady(function () {
-      try {
-        if (box.classList && box.classList.contains && box.classList.contains('playing')) return;
-        if ('isConnected' in box && !box.isConnected) return;
-        if (box.getAttribute && box.getAttribute('data-slot')) return;
-        createPlayer(box, id, false);
-      } catch (_) {}
-    });
-  }
-
-  function commandPlayer(player, id) {
-    var current = '';
-    try { if (player.getVideoData) current = player.getVideoData().video_id || ''; } catch (_) {}
-    if (current === id && player.playVideo) player.playVideo();
-    else if (player.loadVideoById) player.loadVideoById(id);
-    else throw new Error('no playback method');
+      if (!grid.querySelectorAll) return;
+      var btns = grid.querySelectorAll('[data-play]');
+      for (var i = 0; i < btns.length; i++) feedObserver.observe(btns[i]);
+    } catch (_) {}
   }
 
   if (sortSelect) sortSelect.addEventListener('change', resetAndRender);
   if (sourceSelect) sourceSelect.addEventListener('change', resetAndRender);
   if (pageSizeSelect) pageSizeSelect.addEventListener('change', resetAndRender);
-  // Inline YouTube playback: warmed player commanded in-gesture first,
-  // API-created autoplay player second, plain autoplay iframe as fallback.
-  // NOTE: do NOT hide/move the facade on pointerdown to "forward" the press
+  // Fallback for cards never swapped in (old browsers, data-saver):
+  // facade click loads an autoplay player directly.
+  // NOTE: never hide/move the facade on pointerdown to "forward" the press
   // into the player — Safari drops the click when its target disappears
   // mid-gesture, which turns every video into a two-click video.
   grid.addEventListener('click', function (e) {
@@ -309,26 +289,9 @@
     var box = btn.closest ? btn.closest('.post-thumb') : null;
     if (!box || !box.classList) return;
     box.classList.add('playing');
-    var slotId = box.getAttribute ? box.getAttribute('data-slot') : null;
-    var player = (slotId && warmPlayers[slotId]) || null;
-    if (player) {
-      try { commandPlayer(player, id); return; } catch (_) {}
-    }
-    if (ytReady() && !slotId) {
-      try { createPlayer(box, id, true); return; } catch (_) {}
-    }
-    box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
-      '?autoplay=1&rel=0&playsinline=1" title="' + escapeHtml(btn.getAttribute('data-title') || 'YouTube video') +
-      '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ' +
-      'allowfullscreen></iframe>';
+    if (box.setAttribute) box.setAttribute('data-player', 'ready');
+    box.innerHTML = playerHtml(id, btn.getAttribute('data-title') || 'YouTube video', true);
   });
-
-  function warmFromEvent(e) {
-    var btn = e.target && e.target.closest ? e.target.closest('[data-play]') : null;
-    if (btn) { try { warmFacade(btn); } catch (_) {} }
-  }
-  grid.addEventListener('pointerover', warmFromEvent);
-  grid.addEventListener('focusin', warmFromEvent);
 
   if (pager) pager.addEventListener('click', function (e) {    var btn = e.target && e.target.closest ? e.target.closest('[data-page]') : null;
     if (!btn || btn.disabled) return;
