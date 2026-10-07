@@ -426,6 +426,12 @@ h2.section-title span { color: var(--dust); }
 }
 .post-card:hover { transform: translateY(-3px); border-color: var(--dust); }
 .post-thumb { aspect-ratio: 16 / 9; background: #000; overflow: hidden; position: relative; }
+/* Brief shimmer while the thumbnail loads (stops on its own) */
+.post-thumb:not(.placeholder) { animation: thumb-pulse 1.2s ease-in-out 4; }
+@keyframes thumb-pulse {
+  0%, 100% { background-color: #141110; }
+  50%       { background-color: #2b241c; }
+}
 .post-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .post-thumb iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 /* Inline playback facade: play button over the thumbnail */
@@ -620,5 +626,6 @@ h2.section-title span { color: var(--dust); }
 @media (prefers-reduced-motion: reduce) {
   .road .dashes::before, .road-strip::before { animation: none; }
   .hero .van-logo { animation: none; }
+  .post-thumb { animation: none; }
   html { scroll-behavior: auto; }
 }

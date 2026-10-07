@@ -60,16 +60,25 @@
       .replace(/"/g, '&quot;');
   }
 
-  function cardHtml(post) {
+  function cardHtml(post, index) {
     var source = post.source || 'youtube';
     var label = SOURCE_LABEL[source] || source;
     var linkText = LINK_TEXT[source] || 'View post';
     var vid = source === 'youtube' ? youtubeId(post) : '';
+    // Above-the-fold thumbs load eagerly; the rest lazy.
+    var eager = (index || 0) < 6;
+    var loading = eager ? 'loading="eager"' + ((index || 0) < 3 ? ' fetchpriority="high"' : '') : 'loading="lazy"';
     var thumb;
     if (vid && post.thumbnail) {
+      // Responsive thumbnails: small file by default, sharp on retina.
+      var small = 'https://i.ytimg.com/vi/' + vid + '/mqdefault.jpg';
+      var large = 'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg';
       // Click-to-play facade: no YouTube iframe until the visitor asks.
       thumb = '<div class="post-thumb playable" data-video="' + vid + '">' +
-        '<img src="' + escapeHtml(post.thumbnail) + '" alt="" loading="lazy">' +
+        '<img src="' + small + '"' +
+        ' srcset="' + small + ' 320w, ' + large + ' 480w"' +
+        ' sizes="(max-width: 600px) calc(100vw - 2.5rem), 330px"' +
+        ' alt="" ' + loading + '>' +
         '<button type="button" class="play-btn" data-play="' + vid + '"' +
         ' data-title="' + escapeHtml(post.title || 'YouTube video') + '"' +
         ' aria-label="Play ' + escapeHtml(post.title || 'video') + ' on this page">' +
@@ -77,7 +86,7 @@
         '</button></div>';
     } else if (post.thumbnail) {
       thumb = '<div class="post-thumb"><img src="' + escapeHtml(post.thumbnail) +
-        '" alt="" loading="lazy"></div>';
+        '" alt="" ' + loading + '></div>';
     } else {
       thumb = '<div class="post-thumb placeholder" aria-hidden="true">' + escapeHtml(label) + '</div>';
     }
@@ -201,7 +210,9 @@
         'the van is probably somewhere without signal. Check back soon.</div>';
     } else {
       var start = (currentPage - 1) * size;
-      grid.innerHTML = posts.slice(start, start + size).map(cardHtml).join('');
+      grid.innerHTML = posts.slice(start, start + size).map(function (p, i) {
+        return cardHtml(p, i);
+      }).join('');
     }
     renderPager(posts.length ? totalPages : 0);
     observeFacades(); // swap near-viewport facades for real players
@@ -373,7 +384,9 @@
     render(true);
   });
 
-  fetch('posts.json', { cache: 'no-store' })
+  // Default HTTP caching (GitHub Pages sends ETags): repeat visits get a
+  // fast 304 when the feed is unchanged, full fetch when it changed.
+  fetch('posts.json')
     .then(function (res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
