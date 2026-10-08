@@ -8,6 +8,15 @@
       "date_seen": null,
       "note": "Home base — where the van adventures begin.",
       "reporter": "GVA"
+    },
+    {
+      "id": "sydney",
+      "lat": 46.1350,
+      "lng": -60.1916,
+      "place": "Sydney, NS",
+      "date_seen": null,
+      "note": "Spotted it driving around Sydney, scanned the QR code - so cool",
+      "reporter": "Anonymous"
     }
   ]
 }
