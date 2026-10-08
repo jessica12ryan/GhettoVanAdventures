@@ -47,6 +47,7 @@
         <p class="section-sub">Seen the ghetto van in the wild? Drop a pin on the map and fill out the sighting report below.</p>
 
         <div class="form-note" id="map-status" hidden></div>
+        <div class="form-note" id="form-note-top" hidden>Thanks! Your sighting is in for review and will appear after approval.</div>
         <div id="spotted-map" role="application" aria-label="Map of van sightings"></div>
       </section>
 
@@ -72,8 +73,8 @@
               <input id="spot-place" name="place" type="text" placeholder="e.g. Brighton, Ontario" required />
             </div>
             <div class="field">
-              <label for="spot-date">When? (optional)</label>
-              <input id="spot-date" name="date" type="date" />
+              <label for="spot-date">When? (optional — leave blank if unsure)</label>
+              <input id="spot-date" name="date" type="text" inputmode="numeric" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" maxlength="10" title="Format: YYYY-MM-DD, or leave blank" />
             </div>
             <div class="field">
               <label for="spot-note">Anything to add? (optional)</label>
@@ -119,7 +120,8 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
-    // Show the confirmation banner after FormSubmit redirects back here.
+    // Show the confirmation banners after FormSubmit redirects back here
+    // (one above the map, one at the form).
     (function () {
       try {
         if (new URLSearchParams(window.location.search).get('sent') === '1') {
@@ -129,6 +131,8 @@
             note.className = 'form-note';
             note.hidden = false;
           }
+          var top = document.getElementById('form-note-top');
+          if (top) top.hidden = false;
         }
       } catch (e) {}
     })();
