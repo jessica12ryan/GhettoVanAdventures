@@ -33,12 +33,15 @@ jobs:
 
       - name: Refresh YouTube entries
         run: python3 tools/fetch-youtube.py
+        continue-on-error: true
 
       - name: Refresh X entries
         run: python3 tools/fetch-x.py
+        continue-on-error: true
 
       - name: Apply social queue
         run: python3 tools/apply-queue.py
+        continue-on-error: true
 
       - name: Commit and push if changed
         run: |

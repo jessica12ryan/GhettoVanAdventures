@@ -32,6 +32,8 @@ posts.json only when something changed. Run it by hand any time to preview.
 
 import json
 import sys
+import time
+import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date
@@ -42,6 +44,13 @@ import feedlib
 
 CHANNEL_ID = "UC10tXd2bgXh1sFqG89shP5w"
 FEED_URL = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
+# Uploads-playlist mirror of the same channel (UU + channel id without "UC").
+# YouTube's RSS endpoint intermittently 404s valid channel feeds (known
+# issue since Dec 2025, daily ~09:00-12:00 UTC, sometimes longer); trying
+# both URLs raises the odds one of them answers.
+PLAYLIST_FEED_URL = (
+    f"https://www.youtube.com/feeds/videos.xml?playlist_id=UU{CHANNEL_ID[2:]}"
+)
 ROOT = Path(__file__).resolve().parent.parent
 POSTS_FILE = ROOT / "posts.json"
 # No retention cap: the RSS feed only ever shows the latest ~15 uploads, but
@@ -55,10 +64,37 @@ NS = {
 }
 
 
+def fetch_url(url, retries=3, delay=10):
+    """Fetch one RSS URL with retries. Returns bytes or None.
+
+    YouTube's feed endpoint intermittently returns 404/500 for valid
+    channels (transient outage — retrying later normally recovers), so
+    every failure is logged and swallowed here instead of raised.
+    """
+    for attempt in range(1, retries + 1):
+        try:
+            req = urllib.request.Request(
+                url, headers={"User-Agent": "GVA-site-updater"}
+            )
+            with urllib.request.urlopen(req, timeout=30) as res:
+                return res.read()
+        except urllib.error.HTTPError as exc:
+            print(f"YouTube feed attempt {attempt}/{retries} for {url}: "
+                  f"HTTP {exc.code} {exc.reason}", flush=True)
+        except Exception as exc:
+            print(f"YouTube feed attempt {attempt}/{retries} for {url}: "
+                  f"{exc}", flush=True)
+        if attempt < retries:
+            time.sleep(delay)
+    return None
+
+
 def fetch_feed():
-    req = urllib.request.Request(FEED_URL, headers={"User-Agent": "GVA-site-updater"})
-    with urllib.request.urlopen(req, timeout=30) as res:
-        return res.read()
+    for url in (FEED_URL, PLAYLIST_FEED_URL):
+        raw = fetch_url(url)
+        if raw:
+            return raw
+    return None
 
 
 def parse_feed(raw: bytes):
@@ -93,7 +129,19 @@ def parse_feed(raw: bytes):
 
 
 def main():
-    videos = parse_feed(fetch_feed())
+    raw = fetch_feed()
+    if not raw:
+        print("YouTube RSS unreachable (transient 404/outage); "
+              "posts.json left untouched.")
+        return
+    try:
+        videos = parse_feed(raw)
+    except Exception as exc:
+        print(f"YouTube RSS unparsable ({exc}); posts.json left untouched.")
+        return
+    if not videos:
+        print("YouTube RSS returned no entries; posts.json left untouched.")
+        return
     print(f"Found {len(videos)} videos in RSS feed.")
 
     data = json.loads(POSTS_FILE.read_text())
