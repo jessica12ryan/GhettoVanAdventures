@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-07",
+  "updated": "2026-10-13",
   "channelId": "UC10tXd2bgXh1sFqG89shP5w",
   "sources": {
     "youtube": "https://www.youtube.com/@ghettovanadventures",
@@ -7,6 +7,15 @@
     "instagram": "https://www.instagram.com/ghettovanadventures/"
   },
   "posts": [
+    {
+      "id": "yt-S1yd0MO3k08",
+      "source": "youtube",
+      "title": "Happy Thanksgiving",
+      "url": "https://www.youtube.com/watch?v=S1yd0MO3k08",
+      "date": "2026-10-13",
+      "thumbnail": "https://i.ytimg.com/vi/S1yd0MO3k08/hqdefault.jpg",
+      "excerpt": ""
+    },
     {
       "id": "yt-ki_inGPWtVg",
       "source": "youtube",
