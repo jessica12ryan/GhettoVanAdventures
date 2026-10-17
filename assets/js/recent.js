@@ -7,12 +7,14 @@
   var sortSelect = document.getElementById('sort-order');
   var sourceSelect = document.getElementById('source-filter');
   var pageSizeSelect = document.getElementById('page-size');
+  var searchInput = document.getElementById('feed-search');
   var pager = document.getElementById('feed-pager');
   var meta = document.getElementById('feed-meta');
   if (!grid) return;
 
   var allPosts = [];
   var currentPage = 1;
+  var searchTimer = null;
   var reduceMotion = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -118,6 +120,12 @@
     return (v === 'oldest' || v === 'az' || v === 'za') ? v : 'newest';
   }
 
+  // Current search term, lowercased; empty string when the box is blank.
+  function searchQuery() {
+    var v = searchInput ? searchInput.value : '';
+    return String(v || '').trim().toLowerCase();
+  }
+
   function compareTitles(a, b, dir) {
     var c = String(a.title || '').localeCompare(String(b.title || ''), undefined,
       { sensitivity: 'base', numeric: true });
@@ -128,9 +136,13 @@
   function getFiltered() {
     var mode = sortMode();
     var source = sourceSelect ? sourceSelect.value : 'all';
+    var query = searchQuery();
 
     var posts = allPosts.filter(function (p) {
-      return source === 'all' || p.source === source;
+      if (source !== 'all' && p.source !== source) return false;
+      if (!query) return true;
+      var haystack = String(p.title || '') + ' ' + String(p.excerpt || '');
+      return haystack.toLowerCase().indexOf(query) !== -1;
     });
 
     if (mode === 'az' || mode === 'za') {
@@ -206,8 +218,12 @@
     if (currentPage > totalPages) currentPage = totalPages;
 
     if (!posts.length) {
-      grid.innerHTML = '<div class="feed-empty">No posts for this filter yet — ' +
-        'the van is probably somewhere without signal. Check back soon.</div>';
+      var q = searchQuery();
+      grid.innerHTML = '<div class="feed-empty">' + (q
+        ? 'Nothing matches &ldquo;' + escapeHtml(searchInput.value.trim()) +
+          '&rdquo; — try a shorter search, or check the live feeds below.'
+        : 'No posts for this filter yet — the van is probably somewhere ' +
+          'without signal. Check back soon.') + '</div>';
     } else {
       var start = (currentPage - 1) * size;
       grid.innerHTML = posts.slice(start, start + size).map(function (p, i) {
@@ -225,7 +241,8 @@
         var to = Math.min(currentPage * size, posts.length);
         meta.textContent = 'Showing ' + from + '–' + to + ' of ' + posts.length +
           (posts.length === 1 ? ' post' : ' posts') +
-          ' · ' + result.sortLabel;
+          ' · ' + result.sortLabel +
+          (searchQuery() ? ' · search active' : '');
       }
     }
 
@@ -340,6 +357,27 @@
   if (sortSelect) sortSelect.addEventListener('change', resetAndRender);
   if (sourceSelect) sourceSelect.addEventListener('change', resetAndRender);
   if (pageSizeSelect) pageSizeSelect.addEventListener('change', resetAndRender);
+  // Typing filters as you go, debounced so each keystroke isn't a re-render
+  // (the archive is 1,600+ posts). 'search' catches the Escape/clear button.
+  if (searchInput) {
+    var onSearchInput = function () {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(resetAndRender, 180);
+    };
+    searchInput.addEventListener('input', onSearchInput);
+    searchInput.addEventListener('search', onSearchInput);
+  }
+  // Pre-fill the search box from ?q=… so links like abby.html's
+  // "Search her episodes" (recent.html?q=Abby) land pre-filtered.
+  try {
+    var m = /[?&]q=([^&]*)/.exec(window.location.search || '');
+    if (m && searchInput) {
+      var initial = m[1].replace(/\+/g, ' ');
+      try { initial = decodeURIComponent(initial); } catch (_) {}
+      if (initial.trim()) searchInput.value = initial;
+    }
+  } catch (_) {}
+
   // Fallback for cards never swapped in (old browsers, data-saver):
   // facade click loads an autoplay player directly.
   // NOTE: never hide/move the facade on pointerdown to "forward" the press

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abby the Akita — Ghetto Van Adventures</title>
+  <meta name="description" content="Meet Abby the Akita — co-pilot, camp guardian and fan favourite of Ghetto Van Adventures, plus her best episodes from the road." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="preconnect" href="https://i.ytimg.com" />
+  <link rel="preload" href="posts.json" as="fetch" crossorigin />
+</head>
+<body>
+
+  <!-- Moving road background, shared across the whole site -->
+  <div class="road" aria-hidden="true">
+    <div class="stars"></div>
+    <div class="horizon"></div>
+    <div class="tarmac"></div>
+    <div class="dashes"></div>
+  </div>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="index.html">
+        <img src="logo-gva-small.png" alt="Ghetto Van Adventures logo" width="40" height="40" />
+        <span>Ghetto <em>Van</em> Adventures</span>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="recent.html">Recent Content</a></li>
+        <li><a href="spotted.html">Spotted</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li class="has-sub">
+          <button type="button" class="sub-toggle is-active" aria-expanded="false">About <span class="caret" aria-hidden="true">&#9662;</span></button>
+          <ul class="sub-menu">
+            <li><a href="about.html">About GVA</a></li>
+            <li><a href="abby.html" aria-current="page">About Abby</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="page">
+    <main class="wrap">
+      <section class="block">
+        <p class="kicker">Co-pilot · Camp guardian</p>
+        <h1 class="display" style="font-size:clamp(2.6rem,7vw,4rem)">Abby <span>The Akita</span></h1>
+        <p class="section-sub">Four wheels, two seats, one very good dog.</p>
+
+        <div class="about-grid">
+          <div class="panel">
+            <h3>Who is Abby</h3>
+            <p>
+              Abby is an Akita and the real star of Ghetto Van Adventures. She rides
+              shotgun across Canada, guards camp like it's her job (it is), and turns
+              every free-camping night into an episode — walks in strange towns,
+              deer she absolutely cannot have, snow zoomies, and the occasional
+              3 a.m. snoring concert.
+            </p>
+            <p>
+              Fans know her from the walk vlogs, the "Abby has zoomies" updates, and
+              every thumbnail where she's the best-looking one in frame. She joined
+              the pack in 2022 and has been riding along ever since.
+            </p>
+            <h3>Abby's greatest hits</h3>
+            <ul>
+              <li><strong>Trail walks:</strong> new towns, new smells, same deer problem.</li>
+              <li><strong>Camp life:</strong> guard duty, snow days, and rained-out adventures.</li>
+              <li><strong>Zoomies:</strong> involuntary sprints at unreasonable hours.</li>
+              <li><strong>Milestones:</strong> birthdays, gotcha-days, and anniversaries on the road.</li>
+            </ul>
+            <div class="btn-row" style="justify-content:flex-start;margin-top:1.4rem">
+              <a class="btn btn-primary" href="recent.html?q=Abby">Search her episodes</a>
+              <a class="btn btn-ghost" href="https://www.youtube.com/@ghettovanadventures" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+            </div>
+          </div>
+          <div>
+            <div class="panel">
+              <ul class="fact-list">
+                <li><strong>Breed</strong>Akita — big, loyal, and done with your nonsense.</li>
+                <li><strong>Role</strong>Co-pilot, camp guardian, and chief morale officer.</li>
+                <li><strong>Pack</strong>Dave behind the wheel (and Bear, remembered always).</li>
+                <li><strong>With the van since</strong>2022 — three years riding together as of 2025.</li>
+                <li><strong>Grew to</strong>Six years old in December 2025.</li>
+              </ul>
+            </div>
+            <div class="coming-soon">
+              Seen Abby in person? <a href="spotted.html">Drop a pin on the Spotted map</a> —
+              she signs autographs (paw prints, technically).
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="road-strip" aria-hidden="true"></div>
+
+      <section class="block">
+        <h2 class="section-title">Abby <span>On Screen</span></h2>
+        <p class="section-sub" id="abby-count">Loading her episodes…</p>
+        <div class="feed-grid" id="abby-grid" aria-live="polite">
+          <div class="feed-empty">Loading Abby's episodes from the road…</div>
+        </div>
+        <div class="btn-row" style="margin-top:1.75rem">
+          <a class="btn btn-ghost" href="recent.html?q=Abby">See every post — search &ldquo;Abby&rdquo;</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="recent.html">Recent Content</a>
+        <a href="spotted.html">Spotted</a>
+        <a href="contact.html">Contact</a>
+        <a href="about.html">About GVA</a>
+        <a href="abby.html" aria-current="page">About Abby</a>
+      </nav>
+      <div class="footer-social">
+        <a href="https://www.youtube.com/@ghettovanadventures" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="https://x.com/ghetto_van" target="_blank" rel="noopener noreferrer">X</a>
+        <a href="https://www.instagram.com/ghettovanadventures/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </div>
+      <p class="copyright">GhettoVanAdventures.com &mdash; <span data-year>2026</span></p>
+    </div>
+  </footer>
+
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/abby.js"></script>
+</body>
+</html>

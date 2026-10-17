@@ -38,7 +38,13 @@
         <li><a href="recent.html" aria-current="page">Recent Content</a></li>
         <li><a href="spotted.html">Spotted</a></li>
         <li><a href="contact.html">Contact</a></li>
-        <li><a href="about.html">About</a></li>
+        <li class="has-sub">
+          <button type="button" class="sub-toggle" aria-expanded="false">About <span class="caret" aria-hidden="true">&#9662;</span></button>
+          <ul class="sub-menu">
+            <li><a href="about.html">About GVA</a></li>
+            <li><a href="abby.html">About Abby</a></li>
+          </ul>
+        </li>
       </ul>
     </nav>
   </header>
@@ -51,6 +57,10 @@
         <p class="section-sub">Every post from every channel in one place.</p>
 
         <div class="feed-controls">
+          <div class="control control-search">
+            <label for="feed-search">Search</label>
+            <input id="feed-search" type="search" placeholder="Search titles &amp; captions…" autocomplete="off" />
+          </div>
           <div class="control">
             <label for="sort-order">Sort order</label>
             <select id="sort-order">
@@ -130,7 +140,8 @@
         <a href="recent.html">Recent Content</a>
         <a href="spotted.html">Spotted</a>
         <a href="contact.html">Contact</a>
-        <a href="about.html">About</a>
+        <a href="about.html">About GVA</a>
+        <a href="abby.html">About Abby</a>
       </nav>
       <div class="footer-social">
         <a href="https://www.youtube.com/@ghettovanadventures" target="_blank" rel="noopener noreferrer">YouTube</a>

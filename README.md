@@ -3,12 +3,13 @@ This repository hosts the public web files for [GhettoVanAdventures.com](http://
 ## Pages
 
 - `index.html` — Home: hero over the moving-road background, latest-uploads embed, social cards.
-- `recent.html` — Recent Content: unified feed (YouTube + X + Instagram) with **Newest → Oldest / Oldest → Newest** dropdown + source filter, plus live embeds.
-- `about.html` — About: story, facts, support info. Built with room to grow.
+- `recent.html` — Recent Content: unified feed (YouTube + X + Instagram) with **live search** (titles + captions, pre-fillable via `?q=`, e.g. `recent.html?q=Abby`), **Newest → Oldest / Oldest → Newest** dropdown + source filter, plus live embeds.
+- `about.html` — About GVA: story, facts, support info. Built with room to grow.
+- `abby.html` — About Abby: meet the Akita; her best episodes render from `posts.json` (anything mentioning "Abby").
 - `contact.html` — Contact: name/email/subject/message form that emails submissions to `GhettoVanAdventures@gmail.com`.
 - `spotted.html` — Spotted: visitor sightings map (Leaflet, no API key) driven by `sightings.json`; see below.
 - `assets/css/style.css` — shared styles, including the moving-road background (`.road`) and the slim in-page divider (`.road-strip`).
-- `assets/js/site.js` — mobile nav + footer year. `assets/js/recent.js` — feed rendering/sorting. `assets/js/spotted.js` — sightings map.
+- `assets/js/site.js` — mobile nav + About submenu + footer year. `assets/js/recent.js` — feed search/sorting. `assets/js/abby.js` — Abby episode grid. `assets/js/spotted.js` — sightings map.
 
 ## The moving road background
 
@@ -104,6 +105,10 @@ submitter through the entry format, and merging approves it.
 Ask visitors for nearest town/landmark, never exact addresses (stated on
 the form).
 
-## Adding pages (room for expansion)1. Copy `about.html` to e.g. `tour.html`, swap the `<main>` content.
+## Adding pages (room for expansion)
+1. Copy `about.html` to e.g. `tour.html`, swap the `<main>` content.
 2. Add one `<li><a href="tour.html">…</a></li>` to the `.nav-links` list in each page header (and the footer nav), setting `aria-current="page"` on the new page's own link.
 3. Add any page-specific styles to `assets/css/style.css` and behaviour to `assets/js/site.js` (or a new file under `assets/js/`).
+
+### The About submenu
+The header's **About** item is a `.has-sub` list item: a `.sub-toggle` button plus a nested `.sub-menu` (About GVA → `about.html`, About Abby → `abby.html`). Desktop hover opens it (CSS, `min-width: 601px`); `site.js` handles the click toggle for touch/keyboard plus outside-click, mouseleave and Escape closing. New submenu pages: add an `<li>` to every page's `.sub-menu` and the same header block to the new page with `aria-current="page"` on its link.
