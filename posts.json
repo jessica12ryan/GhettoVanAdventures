@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-21",
+  "updated": "2026-10-30",
   "channelId": "UC10tXd2bgXh1sFqG89shP5w",
   "sources": {
     "youtube": "https://www.youtube.com/@ghettovanadventures",
@@ -7,6 +7,15 @@
     "instagram": "https://www.instagram.com/ghettovanadventures/"
   },
   "posts": [
+    {
+      "id": "yt-eWkSw8dH1hE",
+      "source": "youtube",
+      "title": "Doritos Ketchup Flavoured Tortilla Chips... The Vanlife Review",
+      "url": "https://www.youtube.com/watch?v=eWkSw8dH1hE",
+      "date": "2026-10-30",
+      "thumbnail": "https://i.ytimg.com/vi/eWkSw8dH1hE/hqdefault.jpg",
+      "excerpt": ""
+    },
     {
       "id": "yt-Jg1DV2o6wSo",
       "source": "youtube",
