@@ -243,7 +243,7 @@ a { color: var(--dust); }
 .sub-toggle:hover { color: var(--offwhite); background: rgba(212, 169, 106, 0.1); }
 .sub-toggle.is-active { color: var(--dust); background: rgba(212, 169, 106, 0.12); }
 .sub-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 1px; }
-.caret { font-size: 1.8em; color: var(--fog); margin-left: 0.15rem; }
+.caret { font-size: 1.8em; color: var(--fog); margin-left: 0.15rem; vertical-align: middle; }
 .sub-menu {
   list-style: none;
   position: absolute;
