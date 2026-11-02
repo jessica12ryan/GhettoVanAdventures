@@ -243,7 +243,7 @@ a { color: var(--dust); }
 .sub-toggle:hover { color: var(--offwhite); background: rgba(212, 169, 106, 0.1); }
 .sub-toggle.is-active { color: var(--dust); background: rgba(212, 169, 106, 0.12); }
 .sub-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 1px; }
-.caret { font-size: 0.9em; color: var(--fog); margin-left: 0.15rem; }
+.caret { font-size: 1.8em; color: var(--fog); margin-left: 0.15rem; }
 .sub-menu {
   list-style: none;
   position: absolute;
@@ -780,7 +780,7 @@ a.post-thumb:hover img { opacity: 0.8; }
   }
   .nav-links.open { display: flex; }
   .sub-toggle { width: 100%; }
-  .caret { float: right; font-size: 0.9em; margin-top: 0.3rem; }
+  .caret { float: right; font-size: 1.8em; margin-top: 0.3rem; }
   .sub-menu {
     position: static;
     background: none;
