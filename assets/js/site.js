@@ -34,7 +34,11 @@
         // mouse click (detail > 0) is left alone; keyboard Enter (detail 0)
         // and touch taps still toggle.
         var hoverCapable = window.matchMedia && window.matchMedia('(hover: hover)').matches;
-        if (e.detail > 0 && hoverCapable) return;
+        var mobileLayout = window.matchMedia && window.matchMedia('(max-width: 600px)').matches;
+        // On hover-capable desktops (not the small hamburger layout) CSS :hover
+        // owns the menu, so a mouse click is left alone. In the hamburger layout
+        // :hover never opens the submenu, so JS must handle mouse clicks too.
+        if (e.detail > 0 && hoverCapable && !mobileLayout) return;
         var open = li.classList.toggle('open');
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         if (!open) closeSubs(null);
