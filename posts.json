@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-03",
+  "updated": "2026-11-07",
   "channelId": "UC10tXd2bgXh1sFqG89shP5w",
   "sources": {
     "youtube": "https://www.youtube.com/@ghettovanadventures",
@@ -7,6 +7,15 @@
     "instagram": "https://www.instagram.com/ghettovanadventures/"
   },
   "posts": [
+    {
+      "id": "yt-TJfpEVjBGXQ",
+      "source": "youtube",
+      "title": "Warm Vanlife November",
+      "url": "https://www.youtube.com/watch?v=TJfpEVjBGXQ",
+      "date": "2026-11-07",
+      "thumbnail": "https://i.ytimg.com/vi/TJfpEVjBGXQ/hqdefault.jpg",
+      "excerpt": ""
+    },
     {
       "id": "yt-etlv1Stsn2s",
       "source": "youtube",
