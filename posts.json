@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-07",
+  "updated": "2026-11-12",
   "channelId": "UC10tXd2bgXh1sFqG89shP5w",
   "sources": {
     "youtube": "https://www.youtube.com/@ghettovanadventures",
@@ -7,6 +7,15 @@
     "instagram": "https://www.instagram.com/ghettovanadventures/"
   },
   "posts": [
+    {
+      "id": "yt-i46VIlk-Lt8",
+      "source": "youtube",
+      "title": "KD Cream Soda ?!?! The Vanlife Review",
+      "url": "https://www.youtube.com/watch?v=i46VIlk-Lt8",
+      "date": "2026-11-12",
+      "thumbnail": "https://i.ytimg.com/vi/i46VIlk-Lt8/hqdefault.jpg",
+      "excerpt": ""
+    },
     {
       "id": "yt-TJfpEVjBGXQ",
       "source": "youtube",
