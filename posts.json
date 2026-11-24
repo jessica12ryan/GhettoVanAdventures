@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-12",
+  "updated": "2026-11-24",
   "channelId": "UC10tXd2bgXh1sFqG89shP5w",
   "sources": {
     "youtube": "https://www.youtube.com/@ghettovanadventures",
@@ -7,6 +7,15 @@
     "instagram": "https://www.instagram.com/ghettovanadventures/"
   },
   "posts": [
+    {
+      "id": "yt-5LI7FfxlRG0",
+      "source": "youtube",
+      "title": "Thinking Of My Father Courtesy Of Nomadic Vanman",
+      "url": "https://www.youtube.com/watch?v=5LI7FfxlRG0",
+      "date": "2026-11-24",
+      "thumbnail": "https://i.ytimg.com/vi/5LI7FfxlRG0/hqdefault.jpg",
+      "excerpt": ""
+    },
     {
       "id": "yt-i46VIlk-Lt8",
       "source": "youtube",
