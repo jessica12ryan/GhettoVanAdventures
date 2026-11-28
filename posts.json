@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-26",
+  "updated": "2026-11-28",
   "channelId": "UC10tXd2bgXh1sFqG89shP5w",
   "sources": {
     "youtube": "https://www.youtube.com/@ghettovanadventures",
@@ -7,6 +7,15 @@
     "instagram": "https://www.instagram.com/ghettovanadventures/"
   },
   "posts": [
+    {
+      "id": "yt-mEirrKvXgu4",
+      "source": "youtube",
+      "title": "Pepsi Gingerbread...The Vanlife Review",
+      "url": "https://www.youtube.com/watch?v=mEirrKvXgu4",
+      "date": "2026-11-28",
+      "thumbnail": "https://i.ytimg.com/vi/mEirrKvXgu4/hqdefault.jpg",
+      "excerpt": ""
+    },
     {
       "id": "yt-Ot8yKe95S78",
       "source": "youtube",
